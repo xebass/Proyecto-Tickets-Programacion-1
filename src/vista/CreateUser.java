@@ -198,7 +198,7 @@ public class CreateUser extends javax.swing.JFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         controlador.nuevoUsuario(txtUser.getText(), 
-                String.valueOf(txtPassword.getPassword()), txtName.getText(), txtLastname.getText(), txtEmail.getText(),txtTelefono.getText(),"USUARIO", true);
+                String.valueOf(txtPassword.getPassword()), txtName.getText(), txtLastname.getText(), txtEmail.getText(),txtTelefono.getText(),"VENDEDOR", true);
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
