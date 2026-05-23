@@ -93,6 +93,9 @@ public class ModelGestionPartidos {
         this.estado = estado;
     }
     
-    
+    @Override
+public String toString() {
+    return this.local + " vs " + this.visitante;
+}
     
 }

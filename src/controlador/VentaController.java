@@ -1,9 +1,9 @@
-package VentaController;
+package controlador;
 
-import VentaDAO.VentaDAO;
-import VentaModel.Cliente;
-import VentaModel.Partido;
-import VentaModel.Ticket;
+import dao.VentaDAO;
+import modelo.ClienteModelo;
+import modelo.ModelGestionPartidos;
+import modelo.Ticket; // Importación explícita agregada
 
 import java.util.List;
 
@@ -24,30 +24,25 @@ public class VentaController {
         }
     }
 
-    // ── datos ────────────────────────────────────────────────────────────
-    public List<Partido> obtenerPartidos() {
+    // ── datos (Adaptados a los modelos unificados) ───────────────────────
+    public List<ModelGestionPartidos> obtenerPartidos() {
         return dao.obtenerPartidos();
     }
 
-    public List<Ticket> obtenerTickets(Partido partido) {
-        double mult = getMultiplicador(partido.getFase());
-        List<Ticket> tickets = dao.obtenerTicketsDisponibles(partido.getId());
-        // ajustar precio según la fase
-        for (Ticket t : tickets) {
-            t.setPrecio(t.getPrecio() * mult);
-        }
-        return tickets;
+   public List<Ticket> obtenerTickets(ModelGestionPartidos partido) {
+        // El DAO ya se encarga de verificar la fase en la BD y aplicar el multiplicador
+        return dao.obtenerTicketsDisponibles(partido.getId());
     }
 
-    public List<Cliente> obtenerClientes() {
+    public List<ClienteModelo> obtenerClientes() {
         return dao.obtenerClientes();
     }
 
-    public boolean guardarCliente(Cliente cl) {
+    public boolean guardarCliente(ClienteModelo cl) {
         return dao.guardarCliente(cl);
     }
 
-    // ── cálculos ─────────────────────────────────────────────────────────
+    // ── cálculos (Estructura de precios e IVA de Guatemala) ──────────────
     public double calcularSubtotal(List<Ticket> seleccionados) {
         double sub = 0;
         for (Ticket t : seleccionados) sub += t.getPrecio();
@@ -62,19 +57,20 @@ public class VentaController {
         return 0;
     }
 
+    // El precio de la interfaz ya incluye el IVA, calculamos el desglose para la factura/vista
     public double calcularIVA(List<Ticket> seleccionados) {
-        double base = calcularSubtotal(seleccionados) - calcularDescuento(seleccionados);
-        return base * 0.12;
+        double totalCobrado = calcularSubtotal(seleccionados) - calcularDescuento(seleccionados);
+        double baseFacturable = totalCobrado / 1.12;
+        return totalCobrado - baseFacturable;
     }
 
+    // El total final neto que el cliente va a pagar en caja
     public double calcularTotal(List<Ticket> seleccionados) {
-        return calcularSubtotal(seleccionados)
-             - calcularDescuento(seleccionados)
-             + calcularIVA(seleccionados);
+        return calcularSubtotal(seleccionados) - calcularDescuento(seleccionados);
     }
 
     // ── confirmar venta ──────────────────────────────────────────────────
-    public boolean confirmarVenta(Cliente cliente, List<Ticket> tickets, int usuarioId) {
+    public boolean confirmarVenta(ClienteModelo cliente, List<Ticket> tickets, int usuarioId) {
         double total = calcularTotal(tickets);
         return dao.guardarVenta(cliente, tickets, usuarioId, total);
     }

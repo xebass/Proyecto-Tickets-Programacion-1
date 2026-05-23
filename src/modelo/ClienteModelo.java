@@ -76,5 +76,8 @@ public class ClienteModelo {
     
     
     
-    
+    @Override
+public String toString() {
+    return this.nombre + " " + this.apellido;
+}
 }

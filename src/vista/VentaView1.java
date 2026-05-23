@@ -2,20 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package VentaView;
+package vista;
  
-import VentaModel.Cliente;
-import VentaModel.Partido;
-import VentaModel.Ticket;
-import VentaController.VentaController;
-import VentaModel.Cliente;
-import VentaModel.Partido;
-import VentaModel.Ticket;
+
+import controlador.VentaController;
+import modelo.ClienteModelo;
+import modelo.ModelGestionPartidos;
+
+
  
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Ticket;
  
 /**
  *
@@ -673,18 +673,21 @@ cargarClientes();
     }
 
     private void onPartidoCambiado() {
-        Partido p = (Partido) cmbPartido.getSelectedItem();
-        if (p == null) return;
-        lblFase.setText(p.getFase() != null ? p.getFase() : "—");
-        lblEstadio.setText(p.getEstadio() != null ? p.getEstadio() : "—");
-        lblFecha.setText(p.getFecha() != null ? p.getFecha().toString() : "—");
-        seleccionados.clear();
-        modeloSeleccionados.setRowCount(0);
-        cargarTickets(p);
-        actualizarResumen();
-    }
+    ModelGestionPartidos p = (ModelGestionPartidos) cmbPartido.getSelectedItem();
+    if (p == null) return;
+    
+    // Comentamos o borramos esta línea para que no busque un método que no existe:
+    // lblFase.setText(p.getFase() != null ? p.getFase() : "—");
+    
+    lblEstadio.setText(p.getEstadio() != null ? p.getEstadio() : "—");
+    lblFecha.setText(p.getFecha() != null ? p.getFecha().toString() : "—");
+    seleccionados.clear();
+    modeloSeleccionados.setRowCount(0);
+    cargarTickets(p);
+    actualizarResumen();
+}
 
-    private void cargarTickets(Partido p) {
+    private void cargarTickets(ModelGestionPartidos p) {
         disponibles.clear();
         modeloDisponibles.setRowCount(0);
         for (Ticket t : controlador.obtenerTickets(p)) {
@@ -770,7 +773,7 @@ cargarClientes();
             JOptionPane.showMessageDialog(this, "Seleccione al menos un ticket.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        Cliente cliente = resolverCliente();
+        ClienteModelo cliente = resolverCliente();
         if (cliente == null) return;
 
         int resp = JOptionPane.showConfirmDialog(this,
@@ -790,9 +793,9 @@ cargarClientes();
         }
     }
 
-    private Cliente resolverCliente() {
+    private ClienteModelo resolverCliente() {
         if (rbExistente.isSelected()) {
-            Cliente cl = (Cliente) cmbCliente.getSelectedItem();
+            ClienteModelo cl = (ClienteModelo) cmbCliente.getSelectedItem();
             if (cl == null) {
                 JOptionPane.showMessageDialog(this, "Seleccione un cliente.", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
@@ -806,7 +809,7 @@ cargarClientes();
             JOptionPane.showMessageDialog(this, "Nombre, apellido y email son obligatorios.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return null;
         }
-        Cliente cl = new Cliente(0, nombre, apellido, txtTelefono.getText().trim(), email, txtDireccion.getText().trim());
+        ClienteModelo cl = new ClienteModelo(0, nombre, apellido, txtTelefono.getText().trim(), email, txtDireccion.getText().trim());
         
         boolean ok = controlador.guardarCliente(cl);
         if (ok) {
