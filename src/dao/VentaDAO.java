@@ -3,11 +3,10 @@ package dao;
 import conexion.CreateConection;
 import modelo.ClienteModelo;
 import modelo.ModelGestionPartidos;
-import modelo.Ticket; 
-
+import modelo.ModelGestionTickets; 
 
 import java.sql.*;
-import java.time.LocalDate; // Necesario para la conversión de fecha
+import java.time.LocalDate; 
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,66 +56,68 @@ public class VentaDAO {
     // =========================================================================
     // 2. OBTENER TICKETS DISPONIBLES POR PARTIDO
     // =========================================================================
-    public List<Ticket> obtenerTicketsDisponibles(int partidoId) {
-    List<Ticket> lista = new ArrayList<>();
-    String fasePartido = "GRUPOS"; // Por defecto si no encuentra nada
+    public List<ModelGestionTickets> obtenerTicketsDisponibles(int partidoId) {
+        List<ModelGestionTickets> lista = new ArrayList<>();
+        String fasePartido = "GRUPOS"; // Por defecto si no encuentra nada
 
-    // 1. Averiguamos la fase del partido directamente de la BD
-    String sqlFase = "SELECT fase FROM partido WHERE id = ?";
-    // 2. Traemos los tickets
-    String sqlTickets = "SELECT id, partido_id, numero_asiento, seccion, precio, estado " +
-                        "FROM ticket WHERE partido_id = ? AND UPPER(estado) = 'DISPONIBLE' " +
-                        "ORDER BY seccion, numero_asiento";
+        // 1. Averiguamos la fase del partido directamente de la BD
+        String sqlFase = "SELECT fase FROM partido WHERE id = ?";
+        // 2. Traemos los tickets (Agregamos tipo_pago a la consulta por si viene de la BD)
+        String sqlTickets = "SELECT id, partido_id, numero_asiento, seccion, precio, estado, tipo_pago " +
+                            "FROM ticket WHERE partido_id = ? AND UPPER(estado) = 'DISPONIBLE' " +
+                            "ORDER BY seccion, numero_asiento";
                  
-    try (Connection conn = connFactory.getConection()) {
-        
-        // Primero obtenemos la fase
-        try (PreparedStatement psFase = conn.prepareStatement(sqlFase)) {
-            psFase.setInt(1, partidoId);
-            try (ResultSet rsFase = psFase.executeQuery()) {
-                if (rsFase.next()) {
-                    fasePartido = rsFase.getString("fase");
+        try (Connection conn = connFactory.getConection()) {
+            
+            // Primero obtenemos la fase
+            try (PreparedStatement psFase = conn.prepareStatement(sqlFase)) {
+                psFase.setInt(1, partidoId);
+                try (ResultSet rsFase = psFase.executeQuery()) {
+                    if (rsFase.next()) {
+                        fasePartido = rsFase.getString("fase");
+                    }
                 }
             }
-        }
 
-        // Calculamos el multiplicador según la fase obtenida de la BD
-        double mult = 1.0;
-        if (fasePartido != null) {
-            switch (fasePartido.toUpperCase()) {
-                case "DIECISEISAVOS": mult = 1.20; break;
-                case "OCTAVOS":       mult = 1.40; break;
-                case "CUARTOS":       mult = 1.60; break;
-                case "SEMIFINAL":     mult = 2.00; break;
-                case "FINAL":         mult = 2.50; break;
-                default:              mult = 1.00; break;
-            }
-        }
-
-        // Ahora cargamos los tickets y les aplicamos el multiplicador directamente
-        try (PreparedStatement psTck = conn.prepareStatement(sqlTickets)) {
-            psTck.setInt(1, partidoId);
-            try (ResultSet rs = psTck.executeQuery()) { 
-                while (rs.next()) {
-                    double precioBase = rs.getDouble("precio");
-                    
-                    Ticket t = new Ticket(
-                            rs.getInt("id"),
-                            rs.getInt("partido_id"),
-                            rs.getString("numero_asiento"),
-                            rs.getString("seccion"),
-                            precioBase * mult, // El precio ya sale calculado desde el DAO
-                            rs.getString("estado")
-                    );
-                    lista.add(t);
+            // Calculamos el multiplicador según la fase obtenida de la BD
+            double mult = 1.0;
+            if (fasePartido != null) {
+                switch (fasePartido.toUpperCase()) {
+                    case "DIECISEISAVOS": mult = 1.20; break;
+                    case "OCTAVOS":       mult = 1.40; break;
+                    case "CUARTOS":       mult = 1.60; break;
+                    case "SEMIFINAL":     mult = 2.00; break;
+                    case "FINAL":         mult = 2.50; break;
+                    default:              mult = 1.00; break;
                 }
             }
+
+            // Ahora cargamos los tickets y les aplicamos el multiplicador directamente
+            try (PreparedStatement psTck = conn.prepareStatement(sqlTickets)) {
+                psTck.setInt(1, partidoId);
+                try (ResultSet rs = psTck.executeQuery()) { 
+                    while (rs.next()) {
+                        double precioBase = rs.getDouble("precio");
+                        
+                        // CORRECCIÓN: Pasamos los 7 parámetros exactos que pide el nuevo constructor
+                        ModelGestionTickets t = new ModelGestionTickets(
+                                rs.getInt("id"),
+                                rs.getInt("partido_id"),
+                                rs.getString("numero_asiento"),
+                                rs.getString("seccion"),
+                                precioBase * mult, // El precio ya sale calculado desde el DAO
+                                rs.getString("estado"),
+                                rs.getString("tipo_pago") // ◄ Faltaba este parámetro
+                        );
+                        lista.add(t);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error obtenerTicketsDisponibles: " + ex.getMessage());
         }
-    } catch (SQLException ex) {
-        System.out.println("Error obtenerTicketsDisponibles: " + ex.getMessage());
+        return lista;
     }
-    return lista;
-}
 
     // =========================================================================
     // 3. OBTENER CLIENTES
@@ -177,7 +178,7 @@ public class VentaDAO {
     // =========================================================================
     // 5. GUARDAR VENTA Y DETALLES (PROCESO TRANSACCIONAL)
     // =========================================================================
-    public boolean guardarVenta(ClienteModelo cliente, List<Ticket> tickets, int usuarioId, double total) {
+    public boolean guardarVenta(ClienteModelo cliente, List<ModelGestionTickets> tickets, int usuarioId, double total) {
         if (tickets == null || tickets.isEmpty()) return false;
         
         Connection conn = null;
@@ -211,7 +212,7 @@ public class VentaDAO {
             try (PreparedStatement psDet = conn.prepareStatement(sqlDetalle);
                  PreparedStatement psTck = conn.prepareStatement(sqlTicket)) {
                 
-                for (Ticket t : tickets) {
+                for (ModelGestionTickets t : tickets) {
                     double precioTotalTicket = t.getPrecio();
                     double precioBase = precioTotalTicket / 1.12;
                     double ivaTicket = precioTotalTicket - precioBase;

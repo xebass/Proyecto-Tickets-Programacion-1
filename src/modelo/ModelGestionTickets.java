@@ -13,14 +13,16 @@ public class ModelGestionTickets {
     int partido_id;
     String numero_asiento;
     String seccion;
+    double precio;
     String estado;
     String tipo_pago;
 
-    public ModelGestionTickets(int id, int partido_id, String numero_asiento, String seccion, String estado, String tipo_pago) {
+    public ModelGestionTickets(int id, int partido_id, String numero_asiento, String seccion,double precio, String estado, String tipo_pago) {
         this.id = id;
         this.partido_id = partido_id;
         this.numero_asiento = numero_asiento;
         this.seccion = seccion;
+        this.precio = precio;
         this.estado = estado;
         this.tipo_pago = tipo_pago;
     }
@@ -72,6 +74,15 @@ public class ModelGestionTickets {
     public void setTipo_pago(String tipo_pago) {
         this.tipo_pago = tipo_pago;
     }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+    
     
     
 }

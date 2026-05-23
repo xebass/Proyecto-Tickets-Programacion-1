@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
-import modelo.Ticket;
+import modelo.ModelGestionTickets;
  
 /**
  *
@@ -31,8 +31,8 @@ public class VentaView1 extends javax.swing.JFrame {
     private DefaultTableModel modeloDisponibles;
     private DefaultTableModel modeloSeleccionados;
 
-    private final List<Ticket> disponibles    = new ArrayList<>();
-    private final List<Ticket> seleccionados  = new ArrayList<>();
+    private final List<ModelGestionTickets> disponibles    = new ArrayList<>();
+    private final List<ModelGestionTickets> seleccionados  = new ArrayList<>();
 
     /**
      * Creates new form VentaView1
@@ -690,10 +690,10 @@ cargarClientes();
     private void cargarTickets(ModelGestionPartidos p) {
         disponibles.clear();
         modeloDisponibles.setRowCount(0);
-        for (Ticket t : controlador.obtenerTickets(p)) {
+        for (ModelGestionTickets t : controlador.obtenerTickets(p)) {
             disponibles.add(t);
             modeloDisponibles.addRow(new Object[]{
-                t.getId(), t.getNumeroAsiento(), t.getSeccion(),
+                t.getId(), t.getNumero_asiento(), t.getSeccion(),
                 String.format("%,.2f", t.getPrecio())
             });
         }
@@ -721,16 +721,16 @@ cargarClientes();
     
     private void moverASeleccionados() {
         int[] filas = jtDisponibles.getSelectedRows();
-        List<Ticket> mover = new ArrayList<>();
+        List<ModelGestionTickets> mover = new ArrayList<>();
         for (int f : filas) {
             int id = (int) modeloDisponibles.getValueAt(f, 0);
             disponibles.stream().filter(t -> t.getId() == id).findFirst().ifPresent(mover::add);
         }
-        for (Ticket t : mover) {
+        for (ModelGestionTickets t : mover) {
             disponibles.remove(t);
             seleccionados.add(t);
             modeloSeleccionados.addRow(new Object[]{
-                t.getId(), t.getNumeroAsiento(), t.getSeccion(),
+                t.getId(), t.getNumero_asiento(), t.getSeccion(),
                 String.format("%,.2f", t.getPrecio())
             });
         }
@@ -740,16 +740,16 @@ cargarClientes();
 
     private void devolverADisponibles() {
         int[] filas = jtSeleccionados.getSelectedRows();
-        List<Ticket> devolver = new ArrayList<>();
+        List<ModelGestionTickets> devolver = new ArrayList<>();
         for (int f : filas) {
             int id = (int) modeloSeleccionados.getValueAt(f, 0);
             seleccionados.stream().filter(t -> t.getId() == id).findFirst().ifPresent(devolver::add);
         }
-        for (Ticket t : devolver) {
+        for (ModelGestionTickets t : devolver) {
             seleccionados.remove(t);
             disponibles.add(t);
             modeloDisponibles.addRow(new Object[]{
-                t.getId(), t.getNumeroAsiento(), t.getSeccion(),
+                t.getId(), t.getNumero_asiento(), t.getSeccion(),
                 String.format("%,.2f", t.getPrecio())
             });
         }
@@ -757,11 +757,11 @@ cargarClientes();
         actualizarResumen();
     }
 
-    private void reconstruirTabla(DefaultTableModel modelo, List<Ticket> lista) {
+    private void reconstruirTabla(DefaultTableModel modelo, List<ModelGestionTickets> lista) {
         modelo.setRowCount(0);
-        for (Ticket t : lista) {
+        for (ModelGestionTickets t : lista) {
             modelo.addRow(new Object[]{
-                t.getId(), t.getNumeroAsiento(), t.getSeccion(),
+                t.getId(), t.getNumero_asiento(), t.getSeccion(),
                 String.format("%,.2f", t.getPrecio())
             });
         }
