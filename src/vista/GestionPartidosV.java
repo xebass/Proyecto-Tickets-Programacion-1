@@ -44,7 +44,7 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
     
     private void Cuidades(){
         cbCuidad.addItem("Selecciona una ciudad");
-        cbCuidad.addItem("Cuidad de Guatemala");
+        cbCuidad.addItem("Ciudad de Guatemala");
         cbCuidad.addItem("Chimaltenango");
         cbCuidad.addItem("Quetzaltenango");
         cbCuidad.addItem("Mazatenango");
@@ -320,7 +320,7 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
         cbEstadio.removeAllItems();
         
         switch(seleccion){
-            case "Cuidad de Guatemala":
+            case "Ciudad de Guatemala":
                 cbEstadio.addItem("Estadio Nacional Doroteo Guamuch Flores");
                 cbEstadio.addItem("Estadio Manuel Felipe Carrera El Trébol");
                 cbEstadio.addItem("Estadio Cementos Progreso");
