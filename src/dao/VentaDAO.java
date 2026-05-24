@@ -20,7 +20,6 @@ public class VentaDAO {
     public List<ModelGestionPartidos> obtenerPartidos() {
         List<ModelGestionPartidos> lista = new ArrayList<>();
         
-        // Agregamos ciudad y capacidad a la consulta para cumplir con el constructor del modelo
         String sql = "SELECT id, equipo_local, equipo_visitante, fecha, estadio, ciudad, capacidad, estado " +
                      "FROM partido WHERE UPPER(estado) = 'DISPONIBLE' ORDER BY fecha";
                      
@@ -29,12 +28,9 @@ public class VentaDAO {
              ResultSet rs = ps.executeQuery()) {
              
             while (rs.next()) {
-                // Conversión segura de java.sql.Timestamp a java.time.LocalDate
                 Timestamp timestamp = rs.getTimestamp("fecha");
                 LocalDate fechaLocalDate = (timestamp != null) ? timestamp.toLocalDateTime().toLocalDate() : null;
 
-                // Llamada exacta al constructor existente de tus compañeros:
-                // (int id, String local, String visitante, LocalDate fecha, String estadio, String ciudad, int capacidad, String estado)
                 ModelGestionPartidos p = new ModelGestionPartidos(
                         rs.getInt("id"),
                         rs.getString("equipo_local"),
@@ -58,18 +54,15 @@ public class VentaDAO {
     // =========================================================================
     public List<ModelGestionTickets> obtenerTicketsDisponibles(int partidoId) {
         List<ModelGestionTickets> lista = new ArrayList<>();
-        String fasePartido = "GRUPOS"; // Por defecto si no encuentra nada
+        String fasePartido = "GRUPOS"; 
 
-        // 1. Averiguamos la fase del partido directamente de la BD
         String sqlFase = "SELECT fase FROM partido WHERE id = ?";
-        // 2. Traemos los tickets (Agregamos tipo_pago a la consulta por si viene de la BD)
         String sqlTickets = "SELECT id, partido_id, numero_asiento, seccion, precio, estado, tipo_pago " +
                             "FROM ticket WHERE partido_id = ? AND UPPER(estado) = 'DISPONIBLE' " +
                             "ORDER BY seccion, numero_asiento";
                  
         try (Connection conn = connFactory.getConection()) {
             
-            // Primero obtenemos la fase
             try (PreparedStatement psFase = conn.prepareStatement(sqlFase)) {
                 psFase.setInt(1, partidoId);
                 try (ResultSet rsFase = psFase.executeQuery()) {
@@ -79,7 +72,6 @@ public class VentaDAO {
                 }
             }
 
-            // Calculamos el multiplicador según la fase obtenida de la BD
             double mult = 1.0;
             if (fasePartido != null) {
                 switch (fasePartido.toUpperCase()) {
@@ -92,22 +84,20 @@ public class VentaDAO {
                 }
             }
 
-            // Ahora cargamos los tickets y les aplicamos el multiplicador directamente
             try (PreparedStatement psTck = conn.prepareStatement(sqlTickets)) {
                 psTck.setInt(1, partidoId);
                 try (ResultSet rs = psTck.executeQuery()) { 
                     while (rs.next()) {
                         double precioBase = rs.getDouble("precio");
                         
-                        // CORRECCIÓN: Pasamos los 7 parámetros exactos que pide el nuevo constructor
                         ModelGestionTickets t = new ModelGestionTickets(
                                 rs.getInt("id"),
                                 rs.getInt("partido_id"),
                                 rs.getString("numero_asiento"),
                                 rs.getString("seccion"),
-                                precioBase * mult, // El precio ya sale calculado desde el DAO
+                                precioBase * mult, 
                                 rs.getString("estado"),
-                                rs.getString("tipo_pago") // ◄ Faltaba este parámetro
+                                rs.getString("tipo_pago") 
                         );
                         lista.add(t);
                     }
@@ -176,9 +166,9 @@ public class VentaDAO {
     }
 
     // =========================================================================
-    // 5. GUARDAR VENTA Y DETALLES (PROCESO TRANSACCIONAL)
+    // 5. GUARDAR VENTA Y DETALLES (ACTUALIZADO TRANSACCIONAL CON METODO DE PAGO Y NIT)
     // =========================================================================
-    public boolean guardarVenta(ClienteModelo cliente, List<ModelGestionTickets> tickets, int usuarioId, double total) {
+    public boolean guardarVenta(ClienteModelo cliente, List<ModelGestionTickets> tickets, int usuarioId, double total, String metodoPago, String facturaNit) {
         if (tickets == null || tickets.isEmpty()) return false;
         
         Connection conn = null;
@@ -187,12 +177,15 @@ public class VentaDAO {
             conn.setAutoCommit(false); 
 
             int ventaId = -1;
-            String sqlVenta = "INSERT INTO venta (cliente_id, usuario_id, total) VALUES (?, ?, ?)";
+            // Incluimos las columnas correspondientes en el query de base de datos
+            String sqlVenta = "INSERT INTO venta (cliente_id, usuario_id, total, metodo_pago, factura_nit) VALUES (?, ?, ?, ?, ?)";
             
             try (PreparedStatement ps = conn.prepareStatement(sqlVenta, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, cliente.getIdCliente()); 
                 ps.setInt(2, usuarioId);
                 ps.setDouble(3, total);
+                ps.setString(4, metodoPago);
+                ps.setString(5, facturaNit);
                 ps.executeUpdate();
                 
                 try (ResultSet rs = ps.getGeneratedKeys()) {

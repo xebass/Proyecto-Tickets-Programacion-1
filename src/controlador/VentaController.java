@@ -69,9 +69,10 @@ public class VentaController {
         return calcularSubtotal(seleccionados) - calcularDescuento(seleccionados);
     }
 
-    // ── confirmar venta ──────────────────────────────────────────────────
-    public boolean confirmarVenta(ClienteModelo cliente, List<ModelGestionTickets> tickets, int usuarioId) {
+    // ── confirmar venta (ACTUALIZADO CON METODO DE PAGO Y NIT) ───────────
+    public boolean confirmarVenta(ClienteModelo cliente, List<ModelGestionTickets> tickets, int usuarioId, String metodoPago, String facturaNit) {
         double total = calcularTotal(tickets);
-        return dao.guardarVenta(cliente, tickets, usuarioId, total);
+        // Enviamos la firma completa con los 6 parámetros requeridos hacia el DAO
+        return dao.guardarVenta(cliente, tickets, usuarioId, total, metodoPago, facturaNit);
     }
 }
