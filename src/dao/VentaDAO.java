@@ -43,7 +43,8 @@ public class VentaDAO {
                         rs.getString("estadio"),
                         rs.getString("ciudad"),
                         rs.getInt("capacidad"),
-                        rs.getString("estado")
+                        rs.getString("estado"),
+                        rs.getString("fase")
                 );
                 lista.add(p);
             }

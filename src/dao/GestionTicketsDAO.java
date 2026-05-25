@@ -29,7 +29,7 @@ public class GestionTicketsDAO {
                  ModelGestionPartidos partido = new ModelGestionPartidos(rs.getInt("id"), 
                         rs.getString("equipo_local"), rs.getString("equipo_visitante"), rs.getDate("fecha").toLocalDate(), 
                         rs.getString("estadio"), 
-                        rs.getString("ciudad"), rs.getInt("capacidad"), rs.getString("estado"));
+                        rs.getString("ciudad"), rs.getInt("capacidad"), rs.getString("estado"), rs.getString("fase"));
                 listap.add(partido);
             }
             
