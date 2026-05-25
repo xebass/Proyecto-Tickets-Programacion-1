@@ -60,6 +60,7 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
             cbFase.addItem("Ingresa un partido");
         
         }else{
+            cbFase.addItem("Selecciona una fase");
             cbFase.addItem("FASE DE GRUPOS");
             cbFase.addItem("DECISEISAVOS");
             cbFase.addItem("OCTAVOS");
@@ -98,7 +99,6 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jtPartidos = new javax.swing.JTable();
         btnGuardar = new javax.swing.JButton();
-        btnConsultar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         cbFase = new javax.swing.JComboBox<>();
@@ -174,10 +174,6 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
         btnGuardar.setText("Crear Partido");
         btnGuardar.addActionListener(this::btnGuardarActionPerformed);
 
-        btnConsultar.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        btnConsultar.setText("Consultar");
-        btnConsultar.addActionListener(this::btnConsultarActionPerformed);
-
         btnActualizar.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         btnActualizar.setText("Actualizar");
         btnActualizar.addActionListener(this::btnActualizarActionPerformed);
@@ -194,7 +190,7 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel1)
@@ -202,20 +198,12 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel5))
                             .addGap(314, 314, 314))
                         .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(rbDisponible)
-                                    .addGap(56, 56, 56))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(btnGuardar)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(rbFinalizado))
-                            .addGap(46, 46, 46)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(rbCancelado)
-                                .addComponent(btnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(rbDisponible)
+                            .addGap(56, 56, 56)
+                            .addComponent(rbFinalizado)
+                            .addGap(61, 61, 61)
+                            .addComponent(rbCancelado)
+                            .addGap(17, 17, 17))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(cbEstadio, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -240,6 +228,12 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(102, 102, 102)
+                .addComponent(btnGuardar)
+                .addGap(92, 92, 92)
+                .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -283,15 +277,14 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
                             .addComponent(rbFinalizado)
                             .addComponent(rbCancelado)
                             .addComponent(cbFase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(193, 193, 193)
+                        .addGap(83, 83, 83)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
 
         pack();
@@ -299,7 +292,7 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
 
     
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        validarCampos();
+        if(!validarCampos())return;
         LocalDate fecha = txtFecha.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
         String estado = "";
         if(rbDisponible.isSelected()){
@@ -399,7 +392,7 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbCuidadActionPerformed
 
     
-    private boolean validarCampos() {
+    private boolean validarCampos() {//FUNCION PARA QUE COMPRUEBE SI ESTAN LLENOS TODOS LOS CAMPOS
     if (txtLocal.getText().trim().isEmpty()) {
         JOptionPane.showMessageDialog(this, "El equipo local es obligatorio.", "Error", JOptionPane.ERROR_MESSAGE);
         txtLocal.requestFocus();
@@ -414,11 +407,11 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
         JOptionPane.showMessageDialog(this, "La fecha es obligatoria.", "Error", JOptionPane.ERROR_MESSAGE);
         return false;
     }
-    if (cbEstadio.getSelectedItem() == null || cbEstadio.getSelectedItem().toString().isEmpty()) {
+    if (cbEstadio.getSelectedItem() == null || cbEstadio.getSelectedItem().toString().equals("Selecciona una cuidad")) {
         JOptionPane.showMessageDialog(this, "El estadio es obligatorio.", "Error", JOptionPane.ERROR_MESSAGE);
         return false;
     }
-    if (cbCuidad.getSelectedItem() == null || cbCuidad.getSelectedItem().toString().isEmpty()) {
+    if (cbCuidad.getSelectedItem() == null || cbCuidad.getSelectedItem().toString().equals("Selecciona una ciudad")) {
         JOptionPane.showMessageDialog(this, "La ciudad es obligatoria.", "Error", JOptionPane.ERROR_MESSAGE);
         return false;
     }
@@ -426,8 +419,14 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
         JOptionPane.showMessageDialog(this, "La capacidad es obligatoria.", "Error", JOptionPane.ERROR_MESSAGE);
         txtCapacidad.requestFocus();
         return false;
+        
+    
     }
-    return true; // todo bien
+    if(cbFase.getSelectedItem() == null || cbCuidad.getSelectedItem().toString().equals("Selecciona una fase")){
+        JOptionPane.showMessageDialog(this, "Ingresa una Fase.", "Error", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+    return true;
 }
     
     private void rbDisponibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbDisponibleActionPerformed
@@ -441,14 +440,9 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
         
     }//GEN-LAST:event_txtCapacidadKeyTyped
 
-    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        // TODO add your handling code here:
-        cargarPartidos();
-    }//GEN-LAST:event_btnConsultarActionPerformed
-
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         // TODO add your handling code here:
-        validarCampos();
+        if(!validarCampos())return;
         LocalDate fecha = txtFecha.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
         String estado = "";
         if(rbDisponible.isSelected()){
@@ -513,7 +507,6 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
-    private javax.swing.JButton btnConsultar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JComboBox<String> cbCuidad;
     private javax.swing.JComboBox<String> cbEstadio;
