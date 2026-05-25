@@ -11,4 +11,8 @@ public class GestionTicketsController {
     public List<ModelGestionPartidos> ObtenerPartido(){
         return dao.obtenerPartidos();
     }
+    
+    public boolean generarTicket(ModelGestionTickets t){
+        return dao.generarTicket(t);
+    }
 }

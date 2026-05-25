@@ -39,4 +39,26 @@ public class GestionTicketsDAO {
         }
         return listap;
     } 
+    
+    public boolean generarTicket(ModelGestionTickets t) {
+    String sql = "INSERT INTO ticket(partido_id, numero_asiento, seccion, precio, estado) VALUES (?, ?, ?, ?, ?) ";
+
+    try {
+        Connection con = connF.getConection();
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        ps.setInt(1, t.getPartido_id());
+        ps.setString(2, t.getNumero_asiento());
+        ps.setString(3, t.getSeccion());
+        ps.setDouble(4, t.getPrecio());
+        ps.setString(5, t.getEstado());
+
+        ps.executeUpdate();
+        return true;
+
+    } catch (SQLException ex) {
+        System.out.println("Error al generar ticket: " + ex.getMessage());
+        return false;
+    }
+}
 }
