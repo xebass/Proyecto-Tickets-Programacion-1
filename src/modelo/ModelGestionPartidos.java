@@ -14,11 +14,12 @@ public class ModelGestionPartidos {
     String cuidad;
     int capacidad;
     String estado;
-    
+    String fase;
+    int disponibilidad;
     
     
 
-    public ModelGestionPartidos(int id, String local, String visitante, LocalDate fecha, String estadio, String cuidad, int capacidad, String estado) {
+    public ModelGestionPartidos(int id, String local, String visitante, LocalDate fecha, String estadio, String cuidad, int capacidad, String estado, String fase, int disponibilidad) {
         this.id = id;
         this.local = local;
         this.visitante = visitante;
@@ -27,6 +28,32 @@ public class ModelGestionPartidos {
         this.cuidad = cuidad;
         this.capacidad = capacidad;
         this.estado = estado;
+        this.fase = fase;
+        this.disponibilidad = disponibilidad;
+    }
+    
+    
+    
+    
+
+    public ModelGestionPartidos(int id, String local, String visitante, LocalDate fecha, String estadio, String cuidad, int capacidad, String estado, String fase) {
+        this.id = id;
+        this.local = local;
+        this.visitante = visitante;
+        this.fecha = fecha;
+        this.estadio = estadio;
+        this.cuidad = cuidad;
+        this.capacidad = capacidad;
+        this.estado = estado;
+        this.fase = fase;
+    }
+
+    public int getDisponibilidad() {
+        return disponibilidad;
+    }
+
+    public void setDisponibilidad(int disponibilidad) {
+        this.disponibilidad = disponibilidad;
     }
 
     public int getId() {
@@ -92,6 +119,15 @@ public class ModelGestionPartidos {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+
+    public String getFase() {
+        return fase;
+    }
+
+    public void setFase(String fase) {
+        this.fase = fase;
+    }
+    
     
     @Override
 public String toString() {

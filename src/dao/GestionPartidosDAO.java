@@ -16,7 +16,7 @@ public class GestionPartidosDAO {
     
     
     public boolean guardarPartido(ModelGestionPartidos partido){
-        String sql = "INSERT INTO partido (equipo_local, equipo_visitante, fecha, estadio, ciudad, capacidad, estado) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO partido (equipo_local, equipo_visitante, fecha, estadio, ciudad, capacidad, estado, fase) VALUES(?,?,?,?,?,?,?,?)";
         try {
             Connection con = connF.getConection();
             PreparedStatement ps = con.prepareStatement(sql);
@@ -27,6 +27,7 @@ public class GestionPartidosDAO {
             ps.setString(5, partido.getCuidad());
             ps.setInt(6, partido.getCapacidad());
             ps.setString(7, partido.getEstado());
+            ps.setString(8, partido.getFase());
             ps.executeUpdate();
             ps.close();
             con.close();
@@ -52,7 +53,7 @@ public class GestionPartidosDAO {
                 ModelGestionPartidos partido = new ModelGestionPartidos(rs.getInt("id"), 
                         rs.getString("equipo_local"), rs.getString("equipo_visitante"), rs.getDate("fecha").toLocalDate(), 
                         rs.getString("estadio"), 
-                        rs.getString("ciudad"), rs.getInt("capacidad"), rs.getString("estado"));
+                        rs.getString("ciudad"), rs.getInt("capacidad"), rs.getString("estado"), rs.getString("fase"));
                 lista.add(partido);
             }
             
@@ -64,7 +65,7 @@ public class GestionPartidosDAO {
     }
     
     public boolean actualizar (ModelGestionPartidos partido){
-        String sql = "UPDATE partido set equipo_local = ?, equipo_visitante =?, fecha = ?, estadio = ?, ciudad = ?, capacidad = ?, estado = ? WHERE id = ?";
+        String sql = "UPDATE partido set equipo_local = ?, equipo_visitante =?, fecha = ?, estadio = ?, ciudad = ?, capacidad = ?, estado = ?, fase = ? WHERE id = ?";
         try {
             
             Connection con = connF.getConection();
@@ -76,7 +77,8 @@ public class GestionPartidosDAO {
             ps.setString(5, partido.getCuidad());
             ps.setInt(6, partido.getCapacidad());
             ps.setString(7, partido.getEstado());
-            ps.setInt(8, partido.getId());
+            ps.setString(8, partido.getFase());
+            ps.setInt(9, partido.getId());
             ps.executeUpdate();
             ps.close();
             con.close();

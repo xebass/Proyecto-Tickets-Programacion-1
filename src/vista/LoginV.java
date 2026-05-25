@@ -6,6 +6,7 @@ package vista;
 
 import controlador.LoginController;
 import dao.LoginDAO;
+import javax.swing.JOptionPane;
 
 public class LoginV extends javax.swing.JFrame {
     private final LoginController controlador = new LoginController();
@@ -108,16 +109,24 @@ public class LoginV extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        boolean acces = controlador.validarInfo(txtUser.getText(), String.valueOf(txtPassword.getPassword()));
+        String rol = controlador.validarInfo(txtUser.getText(), String.valueOf(txtPassword.getPassword()));
+        if(rol == null)return;
         
-        if (acces){
-            new menuVendedor().setVisible(true);
-            this.dispose();
-        }else{
-            txtUser.setText("");
-            txtPassword.setText("");
+        switch (rol){
+            case "ADMIN":
+                new MenuAdmin().setVisible(true);
+                this.dispose();
+                break;
+                
+            case "VENDEDOR":
+                new menuVendedor().setVisible(true);
+                this.dispose();
+                break;
+                
+            default:
+                JOptionPane.showMessageDialog(null, "Rol no reconocido");
+                break;
         }
-        
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed

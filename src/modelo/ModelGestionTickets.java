@@ -17,6 +17,12 @@ public class ModelGestionTickets {
     String estado;
     String tipo_pago;
 
+
+    
+    public ModelGestionTickets() {
+}
+    
+    
     public ModelGestionTickets(int id, int partido_id, String numero_asiento, String seccion,double precio, String estado, String tipo_pago) {
         this.id = id;
         this.partido_id = partido_id;

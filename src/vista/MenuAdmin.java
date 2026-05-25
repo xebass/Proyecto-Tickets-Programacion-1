@@ -8,14 +8,14 @@ package vista;
  *
  * @author tequi
  */
-public class menuVendedor extends javax.swing.JFrame {
+public class MenuAdmin extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(menuVendedor.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MenuAdmin.class.getName());
 
     /**
-     * Creates new form PRUEBAAAAAAA
+     * Creates new form MenuAdmin
      */
-    public menuVendedor() {
+    public MenuAdmin() {
         initComponents();
     }
 
@@ -34,6 +34,7 @@ public class menuVendedor extends javax.swing.JFrame {
         jmPartidos = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
 
@@ -43,11 +44,11 @@ public class menuVendedor extends javax.swing.JFrame {
         jDesktopPane1.setLayout(jDesktopPane1Layout);
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1612, Short.MAX_VALUE)
+            .addGap(0, 1717, Short.MAX_VALUE)
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 783, Short.MAX_VALUE)
+            .addGap(0, 678, Short.MAX_VALUE)
         );
 
         jMenu1.setText("Gestion");
@@ -63,6 +64,9 @@ public class menuVendedor extends javax.swing.JFrame {
         jMenuItem1.setText("Tickets");
         jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
         jMenu1.add(jMenuItem1);
+
+        jMenuItem4.setText("Vendedores");
+        jMenu1.add(jMenuItem4);
 
         jMenuBar1.add(jMenu1);
 
@@ -80,13 +84,15 @@ public class menuVendedor extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jDesktopPane1)
-                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -96,7 +102,7 @@ public class menuVendedor extends javax.swing.JFrame {
         // TODO add your handling code here:
         GestionPartidosV partido = new GestionPartidosV();
         partido.setVisible(true);
-        
+
         jDesktopPane1.add(partido);
     }//GEN-LAST:event_jmPartidosActionPerformed
 
@@ -104,16 +110,9 @@ public class menuVendedor extends javax.swing.JFrame {
         // TODO add your handling code here:
         Clientes cl = new Clientes();
         cl.setVisible(true);
-        
+
         jDesktopPane1.add(cl);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-        GestionTicketsV tk = new GestionTicketsV();
-        tk.setVisible(true);
-        jDesktopPane1.add(tk);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
@@ -121,6 +120,13 @@ public class menuVendedor extends javax.swing.JFrame {
         login.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        GestionTicketsV tk = new GestionTicketsV();
+        tk.setVisible(true);
+        jDesktopPane1.add(tk);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -144,7 +150,7 @@ public class menuVendedor extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new menuVendedor().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new MenuAdmin().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -155,6 +161,7 @@ public class menuVendedor extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jmPartidos;
     // End of variables declaration//GEN-END:variables
 }

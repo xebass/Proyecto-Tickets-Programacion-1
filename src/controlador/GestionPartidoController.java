@@ -11,8 +11,8 @@ import modelo.ModelGestionPartidos;
 public class GestionPartidoController {
     private final GestionPartidosDAO dao = new GestionPartidosDAO();
     
-    public void NuevoPartido(String local, String visitante, LocalDate fecha, String estadio, String cuidad, int capacidad, String estado){
-        ModelGestionPartidos partido = new ModelGestionPartidos(0, local, visitante, fecha, estadio, cuidad, capacidad, estado);
+    public void NuevoPartido(String local, String visitante, LocalDate fecha, String estadio, String cuidad, int capacidad, String estado, String fase){
+        ModelGestionPartidos partido = new ModelGestionPartidos(0, local, visitante, fecha, estadio, cuidad, capacidad, estado, fase);
         dao.guardarPartido(partido);
     }
     
@@ -20,8 +20,8 @@ public class GestionPartidoController {
         return dao.obtenerDatos();
     }
     
-    public void actualizarPartido(int id, String local, String visitante, LocalDate fecha, String estadio, String cuidad, int capacidad, String estado){
-        ModelGestionPartidos partido = new ModelGestionPartidos(id, local, visitante, fecha, estadio, cuidad, capacidad, estado);
+    public void actualizarPartido(int id, String local, String visitante, LocalDate fecha, String estadio, String cuidad, int capacidad, String estado, String fase){
+        ModelGestionPartidos partido = new ModelGestionPartidos(id, local, visitante, fecha, estadio, cuidad, capacidad, estado, fase);
         dao.actualizar(partido);
     }
     

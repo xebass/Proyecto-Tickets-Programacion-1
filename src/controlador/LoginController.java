@@ -15,7 +15,7 @@ public class LoginController {
         dao.guardarUsuario(user);
     }
     
-    public boolean validarInfo(String username, String password){
+    public String validarInfo(String username, String password){
         modelLog user= new modelLog(username, password);
         return dao.ValidarUser(user);
     }
