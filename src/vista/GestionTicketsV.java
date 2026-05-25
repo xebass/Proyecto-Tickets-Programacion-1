@@ -20,6 +20,8 @@ public class GestionTicketsV extends javax.swing.JFrame {
     private final DefaultTableModel modeloPartido = new DefaultTableModel(new Object[]{"ID", "Partido", "Fecha", "Estadio", "Capacidad", "Estado"}, 0);
     private final GestionTicketsController controlador = new GestionTicketsController();
     private List<ModelGestionPartidos> listaPartidos;
+    
+    
 
     /**
      * Creates new form GestionTicketsV
@@ -29,6 +31,8 @@ public class GestionTicketsV extends javax.swing.JFrame {
         jtPartidos.setModel(modeloPartido);
         cargarPartidos();
         cargarPartidosCB();
+        txtDisponibilidad.setEditable(false);
+        txtNumeroAsientos.setEditable(false);
         
     }
 
@@ -48,8 +52,6 @@ public class GestionTicketsV extends javax.swing.JFrame {
         txtDisponibilidad = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         cbTipoAsiento = new javax.swing.JComboBox<>();
-        jLabel4 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         txtPrecio = new javax.swing.JTextField();
         btnCrearTicket = new javax.swing.JButton();
@@ -79,12 +81,6 @@ public class GestionTicketsV extends javax.swing.JFrame {
         cbTipoAsiento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Palco", "Preferencia", "General" }));
         cbTipoAsiento.addActionListener(this::cbTipoAsientoActionPerformed);
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel4.setText("Tipo de Pago:");
-
-        jComboBox3.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setText("Precio (Sin IVA):");
 
@@ -95,7 +91,7 @@ public class GestionTicketsV extends javax.swing.JFrame {
         btnCrearTicket.addActionListener(this::btnCrearTicketActionPerformed);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel6.setText("No. de Asientos:");
+        jLabel6.setText("Asientos disponibles en sección:");
 
         txtNumeroAsientos.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         txtNumeroAsientos.addActionListener(this::txtNumeroAsientosActionPerformed);
@@ -129,9 +125,7 @@ public class GestionTicketsV extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jLabel6)
                                 .addComponent(jLabel5)
-                                .addComponent(jLabel4)
                                 .addComponent(txtPrecio, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                                .addComponent(jComboBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(txtNumeroAsientos))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jLabel1)
@@ -140,7 +134,7 @@ public class GestionTicketsV extends javax.swing.JFrame {
                                 .addComponent(jLabel3)
                                 .addComponent(cbTipoAsiento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(65, 65, 65)
+                                .addGap(63, 63, 63)
                                 .addComponent(btnCrearTicket)))
                         .addGap(78, 78, 78)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -173,16 +167,13 @@ public class GestionTicketsV extends javax.swing.JFrame {
                         .addComponent(jLabel6)
                         .addGap(12, 12, 12)
                         .addComponent(txtNumeroAsientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)
-                        .addGap(5, 5, 5)
-                        .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnCrearTicket, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnCrearTicket, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(58, 58, 58)))
                 .addGap(36, 36, 36))
         );
 
@@ -206,14 +197,24 @@ public class GestionTicketsV extends javax.swing.JFrame {
     
     ModelGestionPartidos partidoSeleccionado = (ModelGestionPartidos) cbPartido.getSelectedItem();
     
-    mgt.setPartido_id(partidoSeleccionado.getId());
-    mgt.setNumero_asiento(txtNumeroAsientos.getText());
-    mgt.setSeccion(cbTipoAsiento.getSelectedItem().toString());
+    int partido_id = partidoSeleccionado.getId();
+     String seccion = cbTipoAsiento.getSelectedItem().toString().toUpperCase();
+     String noAsiento = controller.generarNumeroAsiento(partido_id, seccion);
+    
+    mgt.setPartido_id(partido_id);
+    mgt.setNumero_asiento(noAsiento);
+    mgt.setSeccion(seccion);
     mgt.setPrecio(Double.parseDouble(txtPrecio.getText()));
     mgt.setEstado("DISPONIBLE");
     
     if(controller.generarTicket(mgt)){
-        JOptionPane.showMessageDialog(this, "Ticket creado correctamente");
+         controller.descontarAsiento(partido_id);
+
+        int nuevaDisponibilidad = Integer.parseInt(txtDisponibilidad.getText()) - 1;
+        txtDisponibilidad.setText(String.valueOf(nuevaDisponibilidad));
+        txtNumeroAsientos.setText(noAsiento);
+        
+        JOptionPane.showMessageDialog(this, "Ticket creado correctamente" + noAsiento);
     }else{
         JOptionPane.showMessageDialog(this, "No se pudo crear el ticket");
     }
@@ -223,11 +224,16 @@ public class GestionTicketsV extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrearTicketActionPerformed
 
     private void cbTipoAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoAsientoActionPerformed
-        // TODO add your handling code here:
+        mostrarDisponibilidadSeccion();
     }//GEN-LAST:event_cbTipoAsientoActionPerformed
 
     private void cbPartidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPartidoActionPerformed
-        // TODO add your handling code here:
+    ModelGestionPartidos partido = (ModelGestionPartidos) cbPartido.getSelectedItem();
+    
+        if(partido != null){
+        txtDisponibilidad.setText(String.valueOf(partido.getDisponibilidad()));
+        mostrarDisponibilidadSeccion();
+        }
     }//GEN-LAST:event_cbPartidoActionPerformed
 
     private void txtNumeroAsientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroAsientosActionPerformed
@@ -242,6 +248,24 @@ public class GestionTicketsV extends javax.swing.JFrame {
                 partido.getFecha(), partido.getEstadio(), partido.getCapacidad(), partido.getEstado()});
         }
     }
+    private void mostrarDisponibilidadSeccion() {
+
+    ModelGestionPartidos partido =(ModelGestionPartidos) cbPartido.getSelectedItem();
+
+    if (partido != null && cbTipoAsiento.getSelectedItem() != null) {
+
+        int partido_id = partido.getId();
+        int capacidad = partido.getCapacidad();
+        
+        String seccion =
+                cbTipoAsiento.getSelectedItem().toString().toUpperCase();
+
+        int disponibles =
+                 controlador.obtenerDisponibilidadSeccion(partido_id, seccion, capacidad);
+
+        txtNumeroAsientos.setText(String.valueOf(disponibles));
+    }
+}
     
     private void cargarPartidosCB(){
         listaPartidos = controlador.ObtenerPartido();
@@ -280,11 +304,9 @@ public class GestionTicketsV extends javax.swing.JFrame {
     private javax.swing.JButton btnCrearTicket;
     private javax.swing.JComboBox<ModelGestionPartidos> cbPartido;
     private javax.swing.JComboBox<String> cbTipoAsiento;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;

@@ -17,6 +17,7 @@ public class ModelGestionTickets {
     String estado;
     String tipo_pago;
 
+
     
     public ModelGestionTickets() {
 }

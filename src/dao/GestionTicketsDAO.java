@@ -29,7 +29,7 @@ public class GestionTicketsDAO {
                  ModelGestionPartidos partido = new ModelGestionPartidos(rs.getInt("id"), 
                         rs.getString("equipo_local"), rs.getString("equipo_visitante"), rs.getDate("fecha").toLocalDate(), 
                         rs.getString("estadio"), 
-                        rs.getString("ciudad"), rs.getInt("capacidad"), rs.getString("estado"), rs.getString("fase"));
+                        rs.getString("ciudad"), rs.getInt("capacidad"), rs.getString("estado"), rs.getString("fase"), rs.getInt("disponibilidad"));
                 listap.add(partido);
             }
             
@@ -61,4 +61,79 @@ public class GestionTicketsDAO {
         return false;
     }
 }
+    
+    public String generarNumeroAsiento(int partido_id, String seccion){
+        String noAsiento = "";
+        int cantidad = 0;
+        
+        String sql = "SELECT COUNT(*) AS total FROM ticket WHERE partido_id = ? AND seccion = ?";
+        
+        try{
+            Connection con = connF.getConection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setInt(1, partido_id);
+            ps.setString(2, seccion);
+            
+            ResultSet rs =  ps.executeQuery();
+            
+            if(rs.next()){
+                cantidad = rs.getInt("total");     
+            }
+            noAsiento = seccion + "-" + (cantidad + 1);
+            
+    }catch(SQLException ex){
+        System.out.println("Error al generar asiento: " + ex.getMessage());
+        }
+        return noAsiento;
+   }    
+    
+    public boolean descontarAsientos(int partido_id){
+        String sql = "UPDATE partido SET disponibilidad = disponibilidad - 1 WHERE id = ? AND disponibilidad > 0";
+        
+        try{
+            Connection con = connF.getConection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setInt(1, partido_id);
+            int filas = ps.executeUpdate();
+            
+            return filas > 0;    
+        }catch(SQLException ex){
+            System.out.println("Error al descontar disponibilidad: " + ex.getMessage());
+            return false;
+        }
+    }
+    public int obtenerDisponibilidadSeccion(int partido_id, String seccion, int capacidad) {
+    int vendidos = 0;
+    int totalSeccion = 0;
+
+    if (seccion.equals("PALCO")) {
+        totalSeccion = capacidad * 10 / 100;
+    } else if (seccion.equals("PREFERENCIA")) {
+        totalSeccion = capacidad * 20 / 100;
+    } else if (seccion.equals("GENERAL")) {
+        totalSeccion = capacidad * 70 / 100;
+    }
+
+    String sql = "SELECT COUNT(*) AS vendidos FROM ticket WHERE partido_id = ? AND seccion = ?";
+
+        try {
+            Connection con = connF.getConection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, partido_id);
+            ps.setString(2, seccion);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                vendidos = rs.getInt("vendidos");
+            }
+
+        }catch (SQLException ex) {
+        System.out.println("Error disponibilidad sección: " + ex.getMessage());
+        }
+
+    return totalSeccion - vendidos;
+    }
 }
