@@ -15,6 +15,23 @@ public class ModelGestionPartidos {
     int capacidad;
     String estado;
     String fase;
+    int disponibilidad;
+    
+    
+
+    public ModelGestionPartidos(int id, String local, String visitante, LocalDate fecha, String estadio, String cuidad, int capacidad, String estado, String fase, int disponibilidad) {
+        this.id = id;
+        this.local = local;
+        this.visitante = visitante;
+        this.fecha = fecha;
+        this.estadio = estadio;
+        this.cuidad = cuidad;
+        this.capacidad = capacidad;
+        this.estado = estado;
+        this.fase = fase;
+        this.disponibilidad = disponibilidad;
+    }
+    
     
     
     
@@ -29,6 +46,14 @@ public class ModelGestionPartidos {
         this.capacidad = capacidad;
         this.estado = estado;
         this.fase = fase;
+    }
+
+    public int getDisponibilidad() {
+        return disponibilidad;
+    }
+
+    public void setDisponibilidad(int disponibilidad) {
+        this.disponibilidad = disponibilidad;
     }
 
     public int getId() {
