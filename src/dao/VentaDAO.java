@@ -14,9 +14,7 @@ public class VentaDAO {
 
     private final CreateConection connFactory = new CreateConection();
 
-    // =========================================================================
-    // 1. OBTENER PARTIDOS DISPONIBLES (Ajustado al constructor del Modelo)
-    // =========================================================================
+   
     public List<ModelGestionPartidos> obtenerPartidos() {
         List<ModelGestionPartidos> lista = new ArrayList<>();
         
@@ -49,9 +47,7 @@ public class VentaDAO {
         return lista;
     }
 
-    // =========================================================================
-    // 2. OBTENER TICKETS DISPONIBLES POR PARTIDO
-    // =========================================================================
+ 
     public List<ModelGestionTickets> obtenerTicketsDisponibles(int partidoId) {
         List<ModelGestionTickets> lista = new ArrayList<>();
         String fasePartido = "GRUPOS"; 
@@ -109,9 +105,7 @@ public class VentaDAO {
         return lista;
     }
 
-    // =========================================================================
-    // 3. OBTENER CLIENTES
-    // =========================================================================
+  
     public List<ClienteModelo> obtenerClientes() {
         List<ClienteModelo> lista = new ArrayList<>();
         String sql = "SELECT id, nombre, apellido, telefono, email, direccion FROM cliente ORDER BY apellido, nombre";
@@ -137,9 +131,7 @@ public class VentaDAO {
         return lista;
     }
 
-    // =========================================================================
-    // 4. GUARDAR CLIENTE NUEVO 
-    // =========================================================================
+    
     public boolean guardarCliente(ClienteModelo cl) {
         String sql = "INSERT INTO cliente (nombre, apellido, telefono, email, direccion) VALUES (?, ?, ?, ?, ?)";
                      
@@ -165,9 +157,6 @@ public class VentaDAO {
         return false;
     }
 
-    // =========================================================================
-    // 5. GUARDAR VENTA Y DETALLES (ACTUALIZADO TRANSACCIONAL CON METODO DE PAGO Y NIT)
-    // =========================================================================
     public boolean guardarVenta(ClienteModelo cliente, List<ModelGestionTickets> tickets, int usuarioId, double total, String metodoPago, String facturaNit) {
         if (tickets == null || tickets.isEmpty()) return false;
         
