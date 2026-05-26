@@ -21,8 +21,61 @@ public class GestionTicketsV extends javax.swing.JFrame {
     private final GestionTicketsController controlador = new GestionTicketsController();
     private List<ModelGestionPartidos> listaPartidos;
     
-    
+    private void calcularTotal() {
+    if (cbTipoAsiento.getSelectedItem() == null) {
+        return;
+    }
 
+    String seccion = cbTipoAsiento.getSelectedItem().toString().toUpperCase();
+
+    double precioUnitario = 0;
+
+    if (seccion.equals("PALCO")) {
+        precioUnitario = 1000;
+    } else if (seccion.equals("PREFERENCIA")) {
+        precioUnitario = 500;
+    } else if (seccion.equals("GENERAL")) {
+        precioUnitario = 200;
+    }
+
+    if (txtNumeroAsientos.getText().isEmpty()) {
+        txtPrecio.setText(String.valueOf(precioUnitario));
+        return;
+    }
+
+    int cantidad = Integer.parseInt(txtNumeroAsientos.getText());
+    double total = precioUnitario * cantidad;
+
+    txtPrecio.setText(String.valueOf(total));
+}
+    
+    private void mostrarDisponibilidadSeccion() {
+
+    ModelGestionPartidos partido =
+            (ModelGestionPartidos) cbPartido.getSelectedItem();
+
+    if (partido != null && cbTipoAsiento.getSelectedItem() != null) {
+
+        int capacidad = partido.getCapacidad();
+
+        String seccion =
+                cbTipoAsiento.getSelectedItem().toString().toUpperCase();
+
+        int disponibles = 0;
+
+        if (seccion.equals("PALCO")) {
+            disponibles = capacidad * 10 / 100;
+        } else if (seccion.equals("PREFERENCIA")) {
+            disponibles = capacidad * 20 / 100;
+        } else if (seccion.equals("GENERAL")) {
+            disponibles = capacidad * 70 / 100;
+        }
+
+        txtDisponibilidadSeccion.setText(String.valueOf(disponibles));
+    }
+}
+    
+    
     /**
      * Creates new form GestionTicketsV
      */
@@ -32,7 +85,8 @@ public class GestionTicketsV extends javax.swing.JFrame {
         cargarPartidos();
         cargarPartidosCB();
         txtDisponibilidad.setEditable(false);
-        txtNumeroAsientos.setEditable(false);
+        txtNumeroAsientos.setEditable(true);
+        txtPrecio.setEditable(false);
         
     }
 
@@ -60,6 +114,8 @@ public class GestionTicketsV extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jtPartidos = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
+        txtDisponibilidadSeccion = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -91,10 +147,15 @@ public class GestionTicketsV extends javax.swing.JFrame {
         btnCrearTicket.addActionListener(this::btnCrearTicketActionPerformed);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel6.setText("Asientos disponibles en sección:");
+        jLabel6.setText("No. de Asientos:");
 
         txtNumeroAsientos.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         txtNumeroAsientos.addActionListener(this::txtNumeroAsientosActionPerformed);
+        txtNumeroAsientos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtNumeroAsientosKeyReleased(evt);
+            }
+        });
 
         jtPartidos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -112,6 +173,12 @@ public class GestionTicketsV extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel7.setText("Partidos:");
 
+        txtDisponibilidadSeccion.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        txtDisponibilidadSeccion.addActionListener(this::txtDisponibilidadSeccionActionPerformed);
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel4.setText("Asientos disponibles:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -123,19 +190,20 @@ public class GestionTicketsV extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel6)
                                 .addComponent(jLabel5)
                                 .addComponent(txtPrecio, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                                .addComponent(txtNumeroAsientos))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jLabel1)
                                 .addComponent(cbPartido, 0, 257, Short.MAX_VALUE)
                                 .addComponent(txtDisponibilidad)
                                 .addComponent(jLabel3)
-                                .addComponent(cbTipoAsiento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(cbTipoAsiento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel6)
+                                .addComponent(txtNumeroAsientos))
+                            .addComponent(txtDisponibilidadSeccion, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(63, 63, 63)
-                                .addComponent(btnCrearTicket)))
+                                .addGap(42, 42, 42)
+                                .addComponent(btnCrearTicket))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(78, 78, 78)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
@@ -145,7 +213,7 @@ public class GestionTicketsV extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(31, Short.MAX_VALUE)
+                .addContainerGap(25, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(15, 15, 15)
                 .addComponent(cbPartido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -154,7 +222,7 @@ public class GestionTicketsV extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtDisponibilidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -163,18 +231,21 @@ public class GestionTicketsV extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
                         .addComponent(cbTipoAsiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtDisponibilidadSeccion, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel6)
                         .addGap(12, 12, 12)
-                        .addComponent(txtNumeroAsientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel5)
+                        .addComponent(txtNumeroAsientos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCrearTicket, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(58, 58, 58)))
-                .addGap(36, 36, 36))
+                        .addComponent(btnCrearTicket, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(24, 24, 24))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -192,39 +263,58 @@ public class GestionTicketsV extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCrearTicketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearTicketActionPerformed
-    ModelGestionTickets mgt = new ModelGestionTickets();
+
     GestionTicketsController controller = new GestionTicketsController();
     
     ModelGestionPartidos partidoSeleccionado = (ModelGestionPartidos) cbPartido.getSelectedItem();
     
     int partido_id = partidoSeleccionado.getId();
-     String seccion = cbTipoAsiento.getSelectedItem().toString().toUpperCase();
-     String noAsiento = controller.generarNumeroAsiento(partido_id, seccion);
-    
-    mgt.setPartido_id(partido_id);
-    mgt.setNumero_asiento(noAsiento);
-    mgt.setSeccion(seccion);
-    mgt.setPrecio(Double.parseDouble(txtPrecio.getText()));
-    mgt.setEstado("DISPONIBLE");
-    
-    if(controller.generarTicket(mgt)){
-         controller.descontarAsiento(partido_id);
 
-        int nuevaDisponibilidad = Integer.parseInt(txtDisponibilidad.getText()) - 1;
-        txtDisponibilidad.setText(String.valueOf(nuevaDisponibilidad));
-        txtNumeroAsientos.setText(noAsiento);
-        
-        JOptionPane.showMessageDialog(this, "Ticket creado correctamente" + noAsiento);
-    }else{
-        JOptionPane.showMessageDialog(this, "No se pudo crear el ticket");
+    String seccion = cbTipoAsiento.getSelectedItem().toString().toUpperCase();
+
+        if (txtNumeroAsientos.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this,"Ingrese cuantos asientos desea comprar");
+         return;
+        }
+        int cantidad = Integer.parseInt(txtNumeroAsientos.getText());
+
+        if (cantidad <= 0) {
+           JOptionPane.showMessageDialog(this, "Ingrese una cantidad válida");
+        return;
     }
-        
+        double total = Double.parseDouble(txtPrecio.getText());
+        double precioUnitario = total / cantidad;
     
+    for (int i = 0; i < cantidad; i++) {
+
+        ModelGestionTickets mgt = new ModelGestionTickets();
+
+        String numeroAsiento =
+                controller.generarNumeroAsiento(partido_id, seccion);
+
+        mgt.setPartido_id(partido_id);
+        mgt.setNumero_asiento(numeroAsiento);
+        mgt.setSeccion(seccion);
+        mgt.setPrecio(precioUnitario);
+        mgt.setEstado("VENDIDO");
+
+        controller.generarTicket(mgt);
+        controller.descontarAsiento(partido_id);
+    }
+
+    int nuevaDisponibilidad =
+            Integer.parseInt(txtDisponibilidad.getText()) - cantidad;
+
+    txtDisponibilidad.setText(String.valueOf(nuevaDisponibilidad));
+
+    JOptionPane.showMessageDialog(this,
+            "Tickets creados correctamente");
     
     }//GEN-LAST:event_btnCrearTicketActionPerformed
 
     private void cbTipoAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoAsientoActionPerformed
-        mostrarDisponibilidadSeccion();
+    calcularTotal();
+    mostrarDisponibilidadSeccion();
     }//GEN-LAST:event_cbTipoAsientoActionPerformed
 
     private void cbPartidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPartidoActionPerformed
@@ -232,13 +322,21 @@ public class GestionTicketsV extends javax.swing.JFrame {
     
         if(partido != null){
         txtDisponibilidad.setText(String.valueOf(partido.getDisponibilidad()));
-        mostrarDisponibilidadSeccion();
+       mostrarDisponibilidadSeccion();
         }
     }//GEN-LAST:event_cbPartidoActionPerformed
 
     private void txtNumeroAsientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroAsientosActionPerformed
-        // TODO add your handling code here:
+    calcularTotal();
     }//GEN-LAST:event_txtNumeroAsientosActionPerformed
+
+    private void txtNumeroAsientosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroAsientosKeyReleased
+    calcularTotal();
+    }//GEN-LAST:event_txtNumeroAsientosKeyReleased
+
+    private void txtDisponibilidadSeccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDisponibilidadSeccionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDisponibilidadSeccionActionPerformed
 
     private void cargarPartidos(){
         modeloPartido.setRowCount(0);
@@ -248,24 +346,7 @@ public class GestionTicketsV extends javax.swing.JFrame {
                 partido.getFecha(), partido.getEstadio(), partido.getCapacidad(), partido.getEstado()});
         }
     }
-    private void mostrarDisponibilidadSeccion() {
-
-    ModelGestionPartidos partido =(ModelGestionPartidos) cbPartido.getSelectedItem();
-
-    if (partido != null && cbTipoAsiento.getSelectedItem() != null) {
-
-        int partido_id = partido.getId();
-        int capacidad = partido.getCapacidad();
-        
-        String seccion =
-                cbTipoAsiento.getSelectedItem().toString().toUpperCase();
-
-        int disponibles =
-                 controlador.obtenerDisponibilidadSeccion(partido_id, seccion, capacidad);
-
-        txtNumeroAsientos.setText(String.valueOf(disponibles));
-    }
-}
+ 
     
     private void cargarPartidosCB(){
         listaPartidos = controlador.ObtenerPartido();
@@ -307,6 +388,7 @@ public class GestionTicketsV extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -314,6 +396,7 @@ public class GestionTicketsV extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jtPartidos;
     private javax.swing.JTextField txtDisponibilidad;
+    private javax.swing.JTextField txtDisponibilidadSeccion;
     private javax.swing.JTextField txtNumeroAsientos;
     private javax.swing.JTextField txtPrecio;
     // End of variables declaration//GEN-END:variables
