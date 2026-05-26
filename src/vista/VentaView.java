@@ -37,11 +37,11 @@ public class VentaView extends javax.swing.JFrame {
      */
     public VentaView() {
         initComponents();
-        // Vinculamos los modelos automáticos creados por NetBeans a nuestras variables
+        
         modeloDisponibles = (DefaultTableModel) jtDisponibles.getModel();
         modeloSeleccionados = (DefaultTableModel) jtSeleccionados.getModel();
         
-        // Carga inicial de datos desde el controlador
+        
         cargarPartidos();
         cargarClientes();
         
@@ -760,68 +760,47 @@ cargarClientes();
     // End of variables declaration//GEN-END:variables
 
 //metodos
-   private void cargarPartidos() {
+  // coloca los partidos en el menu
+private void cargarPartidos() {
     DefaultComboBoxModel modeloCombo = new DefaultComboBoxModel();
-
     List<ModelGestionPartidos> partidos = controlador.obtenerPartidos();
-
     for (ModelGestionPartidos p : partidos) {
         modeloCombo.addElement(p);
     }
-
     cmbPartido.setModel(modeloCombo);
-
     if (cmbPartido.getItemCount() > 0) {
         cmbPartido.setSelectedIndex(0);
-
-        // FORZAR carga manual
         onPartidoCambiado();
     }
 }
-    private void onPartidoCambiado() {
+
+//cuando se cambia de partido cambia la info
+private void onPartidoCambiado() {
     int index = cmbPartido.getSelectedIndex();
+    if (index < 0) return;
 
-if (index < 0) return;
-
-ModelGestionPartidos p = controlador.obtenerPartidos().get(index);
-
-    System.out.println(p);
-
-    if (p == null) {
-        System.out.println("PARTIDO NULL");
-        return;
-    }
-
-    System.out.println("ID PARTIDO: " + p.getId());
+    ModelGestionPartidos p = (ModelGestionPartidos) cmbPartido.getSelectedItem();
+    if (p == null) return;
 
     lblEstadio.setText(p.getEstadio() != null ? p.getEstadio() : "—");
     lblFecha.setText(p.getFecha() != null ? p.getFecha().toString() : "—");
+    lblFase.setText(p.getFase() != null ? p.getFase() : "—");
 
     seleccionados.clear();
     modeloSeleccionados.setRowCount(0);
-
     cargarTickets(p);
-
     actualizarResumen();
 }
 
-    private void cargarTickets(ModelGestionPartidos p) {
 
-    System.out.println("Cargando tickets partido: " + p.getId());
-
+private void cargarTickets(ModelGestionPartidos p) {
     disponibles.clear();
     modeloDisponibles.setRowCount(0);
 
     List<ModelGestionTickets> tickets = controlador.obtenerTickets(p);
 
-    System.out.println("Tickets encontrados: " + tickets.size());
-
     for (ModelGestionTickets t : tickets) {
-
-        System.out.println(t.getNumero_asiento());
-
         disponibles.add(t);
-
         modeloDisponibles.addRow(new Object[]{
             t.getId(),
             t.getNumero_asiento(),
@@ -831,95 +810,99 @@ ModelGestionPartidos p = controlador.obtenerPartidos().get(index);
     }
 }
 
-    private void cargarClientes() {
-        DefaultComboBoxModel modeloCombo = new DefaultComboBoxModel();
-        
-        for (int i = 0; i < controlador.obtenerClientes().size(); i++) {
-            modeloCombo.addElement(controlador.obtenerClientes().get(i));
-        }
-        
-        cmbCliente.setModel(modeloCombo);
-    }
 
-    private void actualizarResumen() {
-        lblSubtotal.setText(String.format("Q %,.2f", controlador.calcularSubtotal(seleccionados)));
-        lblDescuento.setText(String.format("Q %,.2f", controlador.calcularDescuento(seleccionados)));
-        lblIVA.setText(String.format("Q %,.2f", controlador.calcularIVA(seleccionados)));
-        lblTotal.setText(String.format("Q %,.2f", controlador.calcularTotal(seleccionados)));
-        int n = seleccionados.size();
-        
+private void cargarClientes() {
+    DefaultComboBoxModel modeloCombo = new DefaultComboBoxModel();
+    for (ClienteModelo cl : controlador.obtenerClientes()) {
+        modeloCombo.addElement(cl);
     }
+    cmbCliente.setModel(modeloCombo);
+}
 
-    
-    private void moverASeleccionados() {
-        int[] filas = jtDisponibles.getSelectedRows();
-        List<ModelGestionTickets> mover = new ArrayList<>();
-        for (int f : filas) {
-            int id = (int) modeloDisponibles.getValueAt(f, 0);
-            disponibles.stream().filter(t -> t.getId() == id).findFirst().ifPresent(mover::add);
-        }
-        for (ModelGestionTickets t : mover) {
-            disponibles.remove(t);
-            seleccionados.add(t);
-            modeloSeleccionados.addRow(new Object[]{
-                t.getId(), t.getNumero_asiento(), t.getSeccion(),
-                String.format("%,.2f", t.getPrecio())
-            });
-        }
-        reconstruirTabla(modeloDisponibles, disponibles);
-        actualizarResumen();
+// actualiza los lbl
+private void actualizarResumen() {
+    lblSubtotal.setText(String.format("Q %,.2f", controlador.calcularSubtotal(seleccionados)));
+    lblDescuento.setText(String.format("Q %,.2f", controlador.calcularDescuento(seleccionados)));
+    lblIVA.setText(String.format("Q %,.2f", controlador.calcularIVA(seleccionados)));
+    lblTotal.setText(String.format("Q %,.2f", controlador.calcularTotal(seleccionados)));
+}
+
+//se mueven los tickets de seleccionado a disponible y viceversa
+private void moverASeleccionados() {
+    int[] filas = jtDisponibles.getSelectedRows();
+    if (filas.length == 0) return;
+
+    List<ModelGestionTickets> mover = new ArrayList<>();
+    for (int f : filas) {
+        int id = (int) modeloDisponibles.getValueAt(f, 0);
+        disponibles.stream().filter(t -> t.getId() == id).findFirst().ifPresent(mover::add);
     }
-
-    private void devolverADisponibles() {
-        int[] filas = jtSeleccionados.getSelectedRows();
-        List<ModelGestionTickets> devolver = new ArrayList<>();
-        for (int f : filas) {
-            int id = (int) modeloSeleccionados.getValueAt(f, 0);
-            seleccionados.stream().filter(t -> t.getId() == id).findFirst().ifPresent(devolver::add);
-        }
-        for (ModelGestionTickets t : devolver) {
-            seleccionados.remove(t);
-            disponibles.add(t);
-            modeloDisponibles.addRow(new Object[]{
-                t.getId(), t.getNumero_asiento(), t.getSeccion(),
-                String.format("%,.2f", t.getPrecio())
-            });
-        }
-        reconstruirTabla(modeloSeleccionados, seleccionados);
-        actualizarResumen();
+    for (ModelGestionTickets t : mover) {
+        disponibles.remove(t);
+        seleccionados.add(t);
+        modeloSeleccionados.addRow(new Object[]{
+            t.getId(), t.getNumero_asiento(), t.getSeccion(),
+            String.format("%,.2f", t.getPrecio())
+        });
     }
+    reconstruirTabla(modeloDisponibles, disponibles);
+    actualizarResumen();
+}
 
-    private void reconstruirTabla(DefaultTableModel modelo, List<ModelGestionTickets> lista) {
-        modelo.setRowCount(0);
-        for (ModelGestionTickets t : lista) {
-            modelo.addRow(new Object[]{
-                t.getId(), t.getNumero_asiento(), t.getSeccion(),
-                String.format("%,.2f", t.getPrecio())
-            });
-        }
+
+private void devolverADisponibles() {
+    int[] filas = jtSeleccionados.getSelectedRows();
+    if (filas.length == 0) return;
+
+    List<ModelGestionTickets> devolver = new ArrayList<>();
+    for (int f : filas) {
+        int id = (int) modeloSeleccionados.getValueAt(f, 0);
+        seleccionados.stream().filter(t -> t.getId() == id).findFirst().ifPresent(devolver::add);
     }
+    for (ModelGestionTickets t : devolver) {
+        seleccionados.remove(t);
+        disponibles.add(t);
+        modeloDisponibles.addRow(new Object[]{
+            t.getId(), t.getNumero_asiento(), t.getSeccion(),
+            String.format("%,.2f", t.getPrecio())
+        });
+    }
+    reconstruirTabla(modeloSeleccionados, seleccionados);
+    actualizarResumen();
+}
 
-   
-    private void confirmarVenta() {
+
+private void reconstruirTabla(DefaultTableModel modelo, List<ModelGestionTickets> lista) {
+    modelo.setRowCount(0);
+    for (ModelGestionTickets t : lista) {
+        modelo.addRow(new Object[]{
+            t.getId(), t.getNumero_asiento(), t.getSeccion(),
+            String.format("%,.2f", t.getPrecio())
+        });
+    }
+}
+
+// Venta y factura
+private void confirmarVenta() {
     if (seleccionados.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Seleccione al menos un ticket.", "Aviso", JOptionPane.WARNING_MESSAGE);
         return;
     }
+
     ClienteModelo cliente = resolverCliente();
     if (cliente == null) return;
 
-    // 1. CAPTURAMOS LOS NUEVOS DATOS DE LA INTERFAZ
     String metodoPago = getMetodoPago();
     String facturaNit = getNitDocumento();
 
-    // 2. Modificamos el mensaje de confirmación para que muestre el NIT y Método de Pago
+    
     String mensajeConfirmacion = String.format(
-            "¿Confirmar venta de %d ticket(s)?\n\n" +
+            "Confirmar venta de %d ticket(s)?\n\n" +
             "Cliente: %s\n" +
             "NIT: %s\n" +
             "Pago: %s\n" +
             "Total: Q %,.2f",
-            seleccionados.size(), 
+            seleccionados.size(),
             cliente.getNombre() + " " + cliente.getApellido(),
             facturaNit,
             metodoPago,
@@ -931,41 +914,60 @@ ModelGestionPartidos p = controlador.obtenerPartidos().get(index);
 
     
     boolean ok = controlador.confirmarVenta(cliente, seleccionados, usuarioId, metodoPago, facturaNit);
+
+    if (ok) {
+       
+        double subtotal = controlador.calcularSubtotal(seleccionados);
+        double descuento = controlador.calcularDescuento(seleccionados);
+        double iva = controlador.calcularIVA(seleccionados);      
+        double total = controlador.calcularTotal(seleccionados);   
+
         
-        if (ok) {
-            
-            double subtotal = controlador.calcularSubtotal(seleccionados);
-            double descuento = controlador.calcularDescuento(seleccionados);
-            double iva = controlador.calcularIVA(seleccionados);
-            double total = controlador.calcularTotal(seleccionados);
+        String textoRecibo = Factura.generarTextoRecibo(
+            cliente, seleccionados, subtotal, descuento, iva, total, metodoPago, facturaNit
+        );
 
-            
-            String textoRecibo = Factura.generarTextoRecibo(
-                cliente, seleccionados, subtotal, descuento, iva, total, metodoPago, facturaNit
-            );
+        
+        javax.swing.JTextArea textArea = new javax.swing.JTextArea(textoRecibo);
+        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
+        textArea.setEditable(false);
+        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+        scrollPane.setPreferredSize(new java.awt.Dimension(420, 450));
 
-            // 3. Lo metemos en un JTextArea para que mantenga el formato cuadradito de ticket
-            javax.swing.JTextArea textArea = new javax.swing.JTextArea(textoRecibo);
-            textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12)); // Fuente tipo máquina de escribir
-            textArea.setEditable(false);
-            
-            // Le agregamos barra de scroll por si son muchos tickets
-            javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
-            scrollPane.setPreferredSize(new java.awt.Dimension(420, 450));
+        JOptionPane.showMessageDialog(this, scrollPane, "Venta Registrada Exitosamente", JOptionPane.INFORMATION_MESSAGE);
 
-            // 4. Mostramos el recibo final en la pantalla
-            JOptionPane.showMessageDialog(this, scrollPane, "Venta Registrada Exitosamente", JOptionPane.INFORMATION_MESSAGE);
+       
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Desea generar PDF?",
+                "Generar PDF", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (opcion == JOptionPane.YES_OPTION) {
             
-            // Limpiamos la interfaz para la siguiente venta
-            limpiar();
-        } else {
-            JOptionPane.showMessageDialog(this, "Error al registrar la venta.", "Error", JOptionPane.ERROR_MESSAGE);
+            String ruta = Factura.generarPDF(textoRecibo);
+            if (ruta != null) {
+                JOptionPane.showMessageDialog(this,
+                        "PDF guardado en:\n" + ruta,
+                        "PDF Generado", JOptionPane.INFORMATION_MESSAGE);
+                
+                new Thread(() -> {
+                    try {
+                        Runtime.getRuntime().exec(new String[]{"cmd", "/c", ruta});
+                    } catch (Exception ex) {
+                        System.out.println("No se pudo abrir: " + ex.getMessage());
+                    }
+                }).start();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al generar el PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
+
+        limpiar();
+    } else {
+        JOptionPane.showMessageDialog(this, "Error al registrar la venta.", "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
 
-
-
-   private ClienteModelo resolverCliente() {
+// revisa si existe el cliente o no
+private ClienteModelo resolverCliente() {
     if (rbExistente.isSelected()) {
         ClienteModelo cl = (ClienteModelo) cmbCliente.getSelectedItem();
         if (cl == null) {
@@ -973,22 +975,20 @@ ModelGestionPartidos p = controlador.obtenerPartidos().get(index);
         }
         return cl;
     }
-    
+
     String nombre   = txtNombre.getText().trim();
     String apellido = txtApellido.getText().trim();
     String email    = txtEmail.getText().trim();
+
     if (nombre.isEmpty() || apellido.isEmpty() || email.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Nombre, apellido y email son obligatorios.", "Aviso", JOptionPane.WARNING_MESSAGE);
         return null;
     }
+
     ClienteModelo cl = new ClienteModelo(0, nombre, apellido, txtTelefono.getText().trim(), email, txtDireccion.getText().trim());
-    
-    boolean ok = controlador.guardarCliente(cl);
-    if (ok) {
-        return cl;
-    }
-    return null;
+    return controlador.guardarCliente(cl) ? cl : null;
 }
+
 
 private void limpiar() {
     seleccionados.clear();
@@ -998,32 +998,22 @@ private void limpiar() {
     txtTelefono.setText("");
     txtEmail.setText("");
     txtDireccion.setText("");
-    
-    // ── LIMPIEZA DE LOS NUEVOS CAMPOS DE FACTURACIÓN ──
     txtNit.setText("");
-    rbCf.setSelected(true); // Regresa por defecto a Consumidor Final
-    rbEfectivo.setSelected(true); // Regresa por defecto a Efectivo
-    
+    rbCf.setSelected(true);
+    rbEfectivo.setSelected(true);
     if (cmbPartido.getItemCount() > 0) onPartidoCambiado();
     actualizarResumen();
-}    
-    
-public String getMetodoPago() {
-    if (rbTarjeta.isSelected()) {
-        return "TARJETA";
-    }
-    return "EFECTIVO"; 
 }
 
+
+public String getMetodoPago() {
+    return rbTarjeta.isSelected() ? "TARJETA" : "EFECTIVO";
+}
+
+
 public String getNitDocumento() {
-    if (rbCf.isSelected()) {
-        return "CF";
-    }
-    
+    if (rbCf.isSelected()) return "CF";
     String nitTexto = txtNit.getText().trim();
-    if (nitTexto.isEmpty()) {
-        return "CF"; 
-    }
-    return nitTexto; // Retorna el NIT ingresado por el usuario
+    return nitTexto.isEmpty() ? "CF" : nitTexto;
 }
 }

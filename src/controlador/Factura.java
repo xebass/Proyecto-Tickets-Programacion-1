@@ -23,14 +23,14 @@ public class Factura {
         StringBuilder sb = new StringBuilder();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         
-        // Encabezado del Estadio / Torneo
+        //Forma de la factura
         
         sb.append("         Tickets SATS         \n");
         sb.append("=========================================\n");
         sb.append("Fecha/Hora: ").append(dtf.format(LocalDateTime.now())).append("\n");
         sb.append("Método de Pago: ").append(metodoPago.toUpperCase()).append("\n");
         
-        // Tipo de Documento (Factura o Recibo)
+        
         if (facturaNit == null || facturaNit.trim().isEmpty() || facturaNit.equalsIgnoreCase("C/F")) {
             sb.append("Documento:   RECIBO CONSUMIDOR FINAL\n");
             sb.append("NIT:         C/F\n");
@@ -43,18 +43,18 @@ public class Factura {
         sb.append("-----------------------------------------\n");
         sb.append("DESCRIPCIÓN DE ENTRADAS:\n");
         
-        // Listar cada ticket comprado
+       
        for (ModelGestionTickets t : tickets) {
             sb.append(" * Ticket Boleto ID: ").append(t.getId()).append("\n");
             sb.append("   Precio Unitario:          Q ").append(t.getPrecio()).append("\n");
         }
         
-        // Totales y Desglose de Ley en Guatemala
+        
         sb.append("-----------------------------------------\n");
         sb.append(String.format("Subtotal:                   Q %,.2f\n", subtotal));
         sb.append(String.format("Descuento aplicado:         Q %,.2f\n", descuento));
         
-        // Si es Factura, es buena práctica y obligatorio mostrar el desglose del IVA
+       
         if (!facturaNit.equalsIgnoreCase("C/F")) {
             sb.append(String.format("IVA Desglosado (12%%):       Q %,.2f\n", iva));
         }
@@ -67,4 +67,31 @@ public class Factura {
         
         return sb.toString();
     }
+    
+    public static String generarPDF(String textoRecibo) {
+    System.out.println("=== INICIANDO GENERACION DE PDF ===");  // <-- agrega
+    new java.io.File("C:\\Users\\melga\\OneDrive\\Documentos\\facturas").mkdirs();
+    String ruta = "C:\\Users\\melga\\OneDrive\\Documentos\\facturas\\factura_" + System.currentTimeMillis() + ".pdf";
+    System.out.println("Ruta: " + ruta);
+    try {
+        com.itextpdf.text.Document doc = new com.itextpdf.text.Document();
+        com.itextpdf.text.pdf.PdfWriter.getInstance(doc, new java.io.FileOutputStream(ruta));
+        doc.open();
+        
+        com.itextpdf.text.Font fuente = new com.itextpdf.text.Font(
+            com.itextpdf.text.Font.FontFamily.COURIER, 11);
+        
+        for (String linea : textoRecibo.split("\n")) {
+            doc.add(new com.itextpdf.text.Paragraph(linea, fuente));
+        }
+        
+        doc.close();
+        return ruta;
+        
+    } catch (Exception e) {
+        System.out.println("Error al generar PDF: " + e.getMessage());
+        e.printStackTrace();
+        return null;
+    }
+}
 }

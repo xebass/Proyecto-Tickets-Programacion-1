@@ -18,8 +18,8 @@ public class VentaDAO {
     public List<ModelGestionPartidos> obtenerPartidos() {
         List<ModelGestionPartidos> lista = new ArrayList<>();
         
-        String sql = "SELECT id, equipo_local, equipo_visitante, fecha, estadio, ciudad, capacidad, estado " +
-                     "FROM partido WHERE UPPER(estado) = 'DISPONIBLE' ORDER BY fecha";
+        String sql = "SELECT id, equipo_local, equipo_visitante, fecha, estadio, ciudad, capacidad, estado, fase " +
+             "FROM partido WHERE UPPER(estado) = 'DISPONIBLE' ORDER BY fecha";
                      
         try (Connection conn = connFactory.getConection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -54,9 +54,9 @@ public class VentaDAO {
         String fasePartido = "GRUPOS"; 
 
         String sqlFase = "SELECT fase FROM partido WHERE id = ?";
-        String sqlTickets = "SELECT id, partido_id, numero_asiento, seccion, precio, estado, tipo_pago " +
-                            "FROM ticket WHERE partido_id = ? AND UPPER(estado) = 'DISPONIBLE' " +
-                            "ORDER BY seccion, numero_asiento";
+        String sqlTickets = "SELECT id, partido_id, numero_asiento, seccion, precio, estado " +
+                    "FROM ticket WHERE partido_id = ? AND UPPER(estado) = 'DISPONIBLE' " +
+                    "ORDER BY seccion, numero_asiento";
                  
         try (Connection conn = connFactory.getConection()) {
             
@@ -93,9 +93,7 @@ public class VentaDAO {
                                 rs.getString("numero_asiento"),
                                 rs.getString("seccion"),
                                 precioBase * mult, 
-                                rs.getString("estado"),
-                                rs.getString("tipo_pago") 
-                        );
+                                rs.getString("estado"));
                         lista.add(t);
                     }
                 }
@@ -167,8 +165,8 @@ public class VentaDAO {
             conn.setAutoCommit(false); 
 
             int ventaId = -1;
-            // Incluimos las columnas correspondientes en el query de base de datos
-            String sqlVenta = "INSERT INTO venta (cliente_id, usuario_id, total, metodo_pago, factura_nit) VALUES (?, ?, ?, ?, ?)";
+            
+            String sqlVenta = "INSERT INTO venta (cliente_id, usuario_id, total, metodo_pago, nit) VALUES (?, ?, ?, ?, ?)";
             
             try (PreparedStatement ps = conn.prepareStatement(sqlVenta, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, cliente.getIdCliente()); 
