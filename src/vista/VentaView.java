@@ -121,7 +121,8 @@ public class VentaView extends javax.swing.JInternalFrame {
         rbEfectivo = new javax.swing.JRadioButton();
         rbTarjeta = new javax.swing.JRadioButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setToolTipText("Venta de tickets(usuario)");
 
