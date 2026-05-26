@@ -11,14 +11,28 @@ import java.util.Properties;
 
 public class CreateConection {
 
-        public Connection getConection() {
+     public Connection getConection() {
     Connection cn = null;
     try {
         Properties prop = new Properties();
+        InputStream input = null;
         
-        // Busca el properties en la misma carpeta que el JAR
-        String ruta = System.getProperty("user.dir") + "/db_properties.properties";
-        java.io.FileInputStream input = new java.io.FileInputStream(ruta);
+        // Primero intenta cargarlo desde dentro del JAR
+        input = getClass().getResourceAsStream("/conexion/db_properties.properties");
+        
+        // Si no lo encuentra dentro del JAR, lo busca junto al ejecutable
+        if (input == null) {
+            String ruta = System.getProperty("user.dir") + "/db_properties.properties";
+            java.io.File archivo = new java.io.File(ruta);
+            if (archivo.exists()) {
+                input = new java.io.FileInputStream(archivo);
+            }
+        }
+        
+        if (input == null) {
+            System.out.println("No se encontró el archivo properties");
+            return null;
+        }
         
         prop.load(input);
         
