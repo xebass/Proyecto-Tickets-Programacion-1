@@ -5,6 +5,7 @@
 package controlador;
 
 import dao.LoginDAO;
+import java.util.List;
 import modelo.modelLogin;
 import modelo.modelLog;
 public class LoginController {
@@ -19,4 +20,16 @@ public class LoginController {
         modelLog user= new modelLog(username, password);
         return dao.ValidarUser(user);
     }
+    
+    public List<modelLogin> obtenerVendedores(){
+        return dao.obtenerVendedores();
+    }
+    
+    public void actualizar(int id,String username, String password, String name, String lastname, String email, String telefono, String rol, boolean estado){
+        modelLogin user = new modelLogin(id, username, password, name, lastname, email, telefono, rol, estado);
+        dao.actualizar(user);
+        
+    }
+    
 }
+

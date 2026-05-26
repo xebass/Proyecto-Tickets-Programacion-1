@@ -75,5 +75,52 @@ public class LoginDAO {
         return null;
     }
     
+    public List<modelLogin> obtenerVendedores(){
+        List<modelLogin> lista = new ArrayList<>();
+            String sql = "SELECT * FROM public.usuario WHERE rol = 'VENDEDOR'";
+        try {
+            
+            
+            Connection con = connFac.getConection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                modelLogin login = new modelLogin(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("name"),
+                                    rs.getString("lastname"), rs.getString("email"), rs.getString("telefono"), rs.getString("rol"),
+                                    rs.getBoolean("estado"));
+                lista.add(login);
+            }
+                    
+        } catch (SQLException ex) {
+            System.getLogger(LoginDAO.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        return lista;        
+    }
+    
+    public boolean actualizar(modelLogin user){
+        String sql = "UPDATE usuario set name= ?, lastname= ?, email= ?, telefono= ? WHERE id = ?";
+        try {
+            
+            
+            Connection con = connFac.getConection();
+            
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getLastname());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getTelefono());
+            ps.setInt(5, user.getId());
+            
+            ps.executeUpdate();
+            ps.close();
+            con.close();
+            return true;
+        } catch (SQLException ex) {
+            System.getLogger(LoginDAO.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        return false;
+    }
+    
     
 }

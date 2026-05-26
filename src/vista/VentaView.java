@@ -19,7 +19,7 @@ import modelo.ModelGestionTickets;
  *
  * @author melga
  */
-public class VentaView extends javax.swing.JFrame {
+public class VentaView extends javax.swing.JInternalFrame {
    private final VentaController controlador = new VentaController();
 
     
@@ -37,6 +37,10 @@ public class VentaView extends javax.swing.JFrame {
      */
     public VentaView() {
         initComponents();
+        
+        setClosable(true);
+        setMaximizable(true);
+        setResizable(true);
         
         modeloDisponibles = (DefaultTableModel) jtDisponibles.getModel();
         modeloSeleccionados = (DefaultTableModel) jtSeleccionados.getModel();

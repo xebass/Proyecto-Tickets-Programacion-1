@@ -461,9 +461,7 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
                 txtVisitante.getText(), fecha, cbEstadio.getSelectedItem().toString(), cbCuidad.getSelectedItem().toString(), 
                 Integer.parseInt(txtCapacidad.getText()), estado, cbFase.getSelectedItem().toString());
         }
-        controlador.actualizarPartido(idSelected, txtLocal.getText(),
-                txtVisitante.getText(), fecha, cbEstadio.getSelectedItem().toString(), cbCuidad.getSelectedItem().toString(), 
-                Integer.parseInt(txtCapacidad.getText()), estado, cbFase.getSelectedItem().toString());
+        
         cargarPartidos();
     }//GEN-LAST:event_btnActualizarActionPerformed
 

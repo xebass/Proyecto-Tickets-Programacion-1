@@ -30,11 +30,12 @@ public class MenuAdmin extends javax.swing.JFrame {
 
         jDesktopPane1 = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        jmVenta = new javax.swing.JMenu();
         jmPartidos = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
 
@@ -51,24 +52,30 @@ public class MenuAdmin extends javax.swing.JFrame {
             .addGap(0, 779, Short.MAX_VALUE)
         );
 
-        jMenu1.setText("Gestion");
+        jmVenta.setText("Gestion");
+        jmVenta.addActionListener(this::jmVentaActionPerformed);
 
         jmPartidos.setText("Partidos");
         jmPartidos.addActionListener(this::jmPartidosActionPerformed);
-        jMenu1.add(jmPartidos);
+        jmVenta.add(jmPartidos);
 
         jMenuItem3.setText("Clientes");
         jMenuItem3.addActionListener(this::jMenuItem3ActionPerformed);
-        jMenu1.add(jMenuItem3);
+        jmVenta.add(jMenuItem3);
 
         jMenuItem1.setText("Tickets");
         jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
-        jMenu1.add(jMenuItem1);
+        jmVenta.add(jMenuItem1);
 
         jMenuItem4.setText("Vendedores");
-        jMenu1.add(jMenuItem4);
+        jMenuItem4.addActionListener(this::jMenuItem4ActionPerformed);
+        jmVenta.add(jMenuItem4);
 
-        jMenuBar1.add(jMenu1);
+        jMenuItem6.setText("Venta");
+        jMenuItem6.addActionListener(this::jMenuItem6ActionPerformed);
+        jmVenta.add(jMenuItem6);
+
+        jMenuBar1.add(jmVenta);
 
         jMenu2.setText("Opciones");
 
@@ -98,13 +105,33 @@ public class MenuAdmin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jmPartidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmPartidosActionPerformed
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-        GestionPartidosV partido = new GestionPartidosV();
-        partido.setVisible(true);
+        LoginV login = new LoginV();
+        login.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-        jDesktopPane1.add(partido);
-    }//GEN-LAST:event_jmPartidosActionPerformed
+    private void jmVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmVentaActionPerformed
+        // TODO add your handling code here:
+        VentaView venta = new VentaView();
+        venta.setVisible(true);
+        jDesktopPane1.add(venta);
+    }//GEN-LAST:event_jmVentaActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // TODO add your handling code here:
+        VendedoresV v = new VendedoresV();
+        v.setVisible(true);
+        jDesktopPane1.add(v);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        GestionTicketsV tk = new GestionTicketsV();
+        tk.setVisible(true);
+        jDesktopPane1.add(tk);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
@@ -114,19 +141,20 @@ public class MenuAdmin extends javax.swing.JFrame {
         jDesktopPane1.add(cl);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void jmPartidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmPartidosActionPerformed
         // TODO add your handling code here:
-        LoginV login = new LoginV();
-        login.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+        GestionPartidosV partido = new GestionPartidosV();
+        partido.setVisible(true);
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        jDesktopPane1.add(partido);
+    }//GEN-LAST:event_jmPartidosActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         // TODO add your handling code here:
-        GestionTicketsV tk = new GestionTicketsV();
-        tk.setVisible(true);
-        jDesktopPane1.add(tk);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+        VentaView venta = new VentaView();
+        venta.setVisible(true);
+        jDesktopPane1.add(venta);
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -155,13 +183,14 @@ public class MenuAdmin extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane jDesktopPane1;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jmPartidos;
+    private javax.swing.JMenu jmVenta;
     // End of variables declaration//GEN-END:variables
 }

@@ -299,7 +299,7 @@ public class GestionTicketsV extends javax.swing.JInternalFrame {
         mgt.setNumero_asiento(numeroAsiento);
         mgt.setSeccion(seccion);
         mgt.setPrecio(precioUnitario);
-        mgt.setEstado("VENDIDO");
+        mgt.setEstado("DISPONIBLE");
 
         controller.generarTicket(mgt);
         controller.descontarAsiento(partido_id);
