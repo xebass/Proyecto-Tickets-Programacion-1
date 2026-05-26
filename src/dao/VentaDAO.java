@@ -107,7 +107,7 @@ public class VentaDAO {
   
     public List<ClienteModelo> obtenerClientes() {
         List<ClienteModelo> lista = new ArrayList<>();
-        String sql = "SELECT id, nombre, apellido, telefono, email, direccion FROM cliente ORDER BY apellido, nombre";
+        String sql = "SELECT id, nombre, apellido, telefono, email, direccion FROM cliente WHERE estado = TRUE ORDER BY apellido, nombre";
                      
         try (Connection conn = connFactory.getConection();
              PreparedStatement ps = conn.prepareStatement(sql);
