@@ -48,7 +48,7 @@ public class MenuAdmin extends javax.swing.JFrame {
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 678, Short.MAX_VALUE)
+            .addGap(0, 779, Short.MAX_VALUE)
         );
 
         jMenu1.setText("Gestion");
