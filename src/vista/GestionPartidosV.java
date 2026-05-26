@@ -377,7 +377,7 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
                 
             case "Antigua Guatemala":
                 cbEstadio.addItem("Estadio Pensativo");
-            
+                break;
             
             default:
                 cbEstadio.addItem("Ingresa una cuidad primero");
