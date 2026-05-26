@@ -6,6 +6,7 @@ package vista;
 
 import modelo.modelLogin;
 import controlador.LoginController;
+import javax.swing.JOptionPane;
 public class CreateUser extends javax.swing.JFrame {
     private final LoginController controlador = new LoginController();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CreateUser.class.getName());
@@ -17,6 +18,55 @@ public class CreateUser extends javax.swing.JFrame {
     public CreateUser() {
         initComponents();
     }
+    
+    private boolean validarCampos() {
+    if (txtUser.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El username es obligatorio.", "Error", JOptionPane.ERROR_MESSAGE);
+        txtUser.requestFocus();
+        return false;
+    }
+    if (String.valueOf(txtPassword.getPassword()).trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "La contraseña es obligatoria.", "Error", JOptionPane.ERROR_MESSAGE);
+        txtPassword.requestFocus();
+        return false;
+    }
+    if (String.valueOf(txtPassword.getPassword()).length() < 6) {
+        JOptionPane.showMessageDialog(this, "La contraseña debe tener al menos 6 caracteres.", "Error", JOptionPane.ERROR_MESSAGE);
+        txtPassword.requestFocus();
+        return false;
+    }
+    if (txtName.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El nombre es obligatorio.", "Error", JOptionPane.ERROR_MESSAGE);
+        txtName.requestFocus();
+        return false;
+    }
+    if (txtLastname.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El apellido es obligatorio.", "Error", JOptionPane.ERROR_MESSAGE);
+        txtLastname.requestFocus();
+        return false;
+    }
+    if (txtEmail.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El email es obligatorio.", "Error", JOptionPane.ERROR_MESSAGE);
+        txtEmail.requestFocus();
+        return false;
+    }
+    if (!txtEmail.getText().contains("@") || !txtEmail.getText().contains(".")) {
+        JOptionPane.showMessageDialog(this, "El email no es válido.", "Error", JOptionPane.ERROR_MESSAGE);
+        txtEmail.requestFocus();
+        return false;
+    }
+    if (txtTelefono.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El teléfono es obligatorio.", "Error", JOptionPane.ERROR_MESSAGE);
+        txtTelefono.requestFocus();
+        return false;
+    }
+    if (txtTelefono.getText().trim().length() < 8) {
+        JOptionPane.showMessageDialog(this, "El teléfono debe tener al menos 8 dígitos.", "Error", JOptionPane.ERROR_MESSAGE);
+        txtTelefono.requestFocus();
+        return false;
+    }
+    return true;
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -78,6 +128,11 @@ public class CreateUser extends javax.swing.JFrame {
         jLabel6.setText("Telefono:");
 
         txtTelefono.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoKeyTyped(evt);
+            }
+        });
 
         txtPassword.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -197,14 +252,32 @@ public class CreateUser extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        controlador.nuevoUsuario(txtUser.getText(), 
-                String.valueOf(txtPassword.getPassword()), txtName.getText(), txtLastname.getText(), txtEmail.getText(),txtTelefono.getText(),"VENDEDOR", true);
+        
+        if (!validarCampos()) return; // si falla no continua
+    
+            controlador.nuevoUsuario(
+            txtUser.getText(),
+            String.valueOf(txtPassword.getPassword()),
+            txtName.getText(),
+            txtLastname.getText(),
+            txtEmail.getText(),
+            txtTelefono.getText(),
+            "VENDEDOR",
+            true
+        );
+        JOptionPane.showMessageDialog(this, "Usuario creado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         new LoginV().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
+        // TODO add your handling code here:
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)){evt.consume();}
+    }//GEN-LAST:event_txtTelefonoKeyTyped
 
     /**
      * @param args the command line arguments

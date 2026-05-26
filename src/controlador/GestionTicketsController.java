@@ -24,7 +24,5 @@ public class GestionTicketsController {
         return dao.descontarAsientos(partido_id);
     }    
     
-    public int obtenerDisponibilidadSeccion(int partido_id, String seccion, int capacidad){
-        return dao.obtenerDisponibilidadSeccion(partido_id, seccion, capacidad);
-    }
+   
     }

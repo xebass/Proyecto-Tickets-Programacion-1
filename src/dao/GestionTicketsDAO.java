@@ -104,36 +104,5 @@ public class GestionTicketsDAO {
             return false;
         }
     }
-    public int obtenerDisponibilidadSeccion(int partido_id, String seccion, int capacidad) {
-    int vendidos = 0;
-    int totalSeccion = 0;
-
-    if (seccion.equals("PALCO")) {
-        totalSeccion = capacidad * 10 / 100;
-    } else if (seccion.equals("PREFERENCIA")) {
-        totalSeccion = capacidad * 20 / 100;
-    } else if (seccion.equals("GENERAL")) {
-        totalSeccion = capacidad * 70 / 100;
-    }
-
-    String sql = "SELECT COUNT(*) AS vendidos FROM ticket WHERE partido_id = ? AND seccion = ?";
-
-        try {
-            Connection con = connF.getConection();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, partido_id);
-            ps.setString(2, seccion);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                vendidos = rs.getInt("vendidos");
-            }
-
-        }catch (SQLException ex) {
-        System.out.println("Error disponibilidad sección: " + ex.getMessage());
-        }
-
-    return totalSeccion - vendidos;
-    }
+    
 }
