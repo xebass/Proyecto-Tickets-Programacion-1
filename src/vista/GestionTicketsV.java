@@ -14,7 +14,7 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 
 
-public class GestionTicketsV extends javax.swing.JFrame {
+public class GestionTicketsV extends javax.swing.JInternalFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GestionTicketsV.class.getName());
     private final DefaultTableModel modeloPartido = new DefaultTableModel(new Object[]{"ID", "Partido", "Fecha", "Estadio", "Capacidad", "Estado"}, 0);
@@ -81,6 +81,9 @@ public class GestionTicketsV extends javax.swing.JFrame {
      */
     public GestionTicketsV() {
         initComponents();
+        setClosable(true);
+        setMaximizable(true);
+        setResizable(true);
         jtPartidos.setModel(modeloPartido);
         cargarPartidos();
         cargarPartidosCB();
