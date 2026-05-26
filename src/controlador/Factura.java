@@ -70,8 +70,9 @@ public class Factura {
     
     public static String generarPDF(String textoRecibo) {
     System.out.println("=== INICIANDO GENERACION DE PDF ===");  // <-- agrega
-    new java.io.File("C:\\Users\\melga\\OneDrive\\Documentos\\facturas").mkdirs();
-    String ruta = "C:\\Users\\melga\\OneDrive\\Documentos\\facturas\\factura_" + System.currentTimeMillis() + ".pdf";
+    String carpeta = System.getProperty("user.home") + "/Desktop/VOUCHERS PROYECTO";
+    new java.io.File(carpeta).mkdirs();
+    String ruta = carpeta + "/factura_" + System.currentTimeMillis() + ".pdf";
     System.out.println("Ruta: " + ruta);
     try {
         com.itextpdf.text.Document doc = new com.itextpdf.text.Document();

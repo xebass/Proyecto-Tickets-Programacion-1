@@ -54,7 +54,7 @@ public class LoginDAO {
             
             if(rs.next()){
                 String PasswordDB = rs.getString("password");
-                if (BCrypt.checkpw(user.getPassword(), PasswordDB)){//esta onda compara lo que se escribio con la db (osea todo el if)
+                if (BCrypt.checkpw(user.getPassword(), PasswordDB)){//esta onda compara lo que se escribio con de la db (osea todo el if)
                     String rol = rs.getString("rol");
                     ps.close();
                     con.close();
