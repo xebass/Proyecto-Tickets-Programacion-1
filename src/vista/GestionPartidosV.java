@@ -62,7 +62,7 @@ public class GestionPartidosV extends javax.swing.JInternalFrame {
         }else{
             cbFase.addItem("Selecciona una fase");
             cbFase.addItem("FASE DE GRUPOS");
-            cbFase.addItem("DECISEISAVOS");
+            cbFase.addItem("DIECISEISAVOS");
             cbFase.addItem("OCTAVOS");
             cbFase.addItem("CUARTOS");
             cbFase.addItem("SEMIFINAL");
