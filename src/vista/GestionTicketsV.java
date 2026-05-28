@@ -133,6 +133,7 @@ public class GestionTicketsV extends javax.swing.JInternalFrame {
         jLabel2.setText("Selecciona un partido:");
 
         txtDisponibilidad.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        txtDisponibilidad.addActionListener(this::txtDisponibilidadActionPerformed);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setText("Tipo de Asiento:");
@@ -177,6 +178,7 @@ public class GestionTicketsV extends javax.swing.JInternalFrame {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel7.setText("Partidos:");
 
+        txtDisponibilidadSeccion.setEditable(false);
         txtDisponibilidadSeccion.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         txtDisponibilidadSeccion.addActionListener(this::txtDisponibilidadSeccionActionPerformed);
 
@@ -308,11 +310,13 @@ public class GestionTicketsV extends javax.swing.JInternalFrame {
 
     int nuevaDisponibilidad =
             Integer.parseInt(txtDisponibilidad.getText()) - cantidad;
-
+    
+ 
     txtDisponibilidad.setText(String.valueOf(nuevaDisponibilidad));
-
-    JOptionPane.showMessageDialog(this,
-            "Tickets creados correctamente");
+    int nuevoAsiento =
+             Integer.parseInt(txtDisponibilidadSeccion.getText()) - cantidad;
+             txtDisponibilidadSeccion.setText(String.valueOf(nuevoAsiento));
+    JOptionPane.showMessageDialog(this, "Tickets creados correctamente");
     
     }//GEN-LAST:event_btnCrearTicketActionPerformed
 
@@ -341,6 +345,10 @@ public class GestionTicketsV extends javax.swing.JInternalFrame {
     private void txtDisponibilidadSeccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDisponibilidadSeccionActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDisponibilidadSeccionActionPerformed
+
+    private void txtDisponibilidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDisponibilidadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDisponibilidadActionPerformed
 
     private void cargarPartidos(){
         modeloPartido.setRowCount(0);
